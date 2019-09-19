@@ -1,0 +1,7 @@
+# Vendors
+node_modules/
+
+#file
+nohup.out
+.idea
+.DS_Store
