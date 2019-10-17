@@ -1,0 +1,64 @@
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8" />
+    <title>Shift Position</title>
+    <link rel="stylesheet" href="../main.css">
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
+    <script>
+!function(b,a){var c=b.documentElement;a=function(){var a=c.clientWidth;a&&(c.style.fontSize=a/375*100+"px")};window.addEventListener("orientationchange"in window?"orientationchange":"resize",a,!1);a()}(document,window);
+</script>
+</head>
+<body>
+    <div id="container"></div>
+
+<script type="text/javascript">
+
+    var config = {
+        type: Phaser.AUTO,
+        width: 750,
+        height: 1624,
+        backgroundColor: '#2d2d2d',
+        parent: 'container',
+        scene: {
+            preload: preload,
+            create: create,
+            update: update
+        }
+    }
+
+    var game = new Phaser.Game(config);
+
+    var group;
+    var x;
+    var y;
+    var move = 0;
+
+    function preload() {
+        this.load.image('sky', 'assets/deepblue.png');
+        this.load.image('ball', 'assets/ball-tlb.png');
+    }
+
+    function create() {
+        this.add.image(0, 0, 'sky').setOrigin(0);
+
+        group = this.add.group({ key: 'ball', frameQuantity: 128 });
+
+        this.input.on('pointermove', function (pointer) {
+        	x = pointer.x;
+        	y = pointer.y;
+        });
+
+    }
+
+    function update(time, delta) {
+    	move += delta;
+
+    	if (move > 6) {
+    		Phaser.Actions.ShiftPosition(group.getChildren(), x, y);
+    		move = 0;
+    	}
+    }
+</script>
+
+</body>
+</html>

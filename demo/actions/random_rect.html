@@ -1,0 +1,46 @@
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8" />
+    <title>Random Rectangle</title>
+    <link rel="stylesheet" href="../main.css">
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
+    <script>
+!function(b,a){var c=b.documentElement;a=function(){var a=c.clientWidth;a&&(c.style.fontSize=a/375*100+"px")};window.addEventListener("orientationchange"in window?"orientationchange":"resize",a,!1);a()}(document,window);
+</script>
+</head>
+<body>
+    <div id="container"></div>
+
+<script type="text/javascript">
+
+    var config = {
+        type: Phaser.AUTO,
+        width: 750,
+        height: 1624,
+        backgroundColor: '#2d2d2d',
+        parent: 'container',
+        scene: {
+            preload: preload,
+            create: create
+        }
+    }
+
+    var game = new Phaser.Game(config);
+
+    function preload() {
+        this.load.image('orb', 'assets/orb-blue.png');
+    }
+
+    function create() {
+        // Create 300 sprites (they all start life at 0x0)
+        var group = this.add.group({ key: 'orb', frameQuantity: 300 });
+
+        var rect = new Phaser.Geom.Rectangle(300, 300, 300, 100);
+
+        // Randomly position the sprites within the line
+        Phaser.Actions.RandomRectangle(group.getChildren(), rect);
+    }
+</script>
+
+</body>
+</html>
