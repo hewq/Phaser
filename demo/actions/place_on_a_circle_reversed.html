@@ -1,0 +1,71 @@
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8" />
+    <title>Place On A Circle Reversed</title>
+    <link rel="stylesheet" href="../main.css">
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
+    <script>
+!function(b,a){var c=b.documentElement;a=function(){var a=c.clientWidth;a&&(c.style.fontSize=a/375*100+"px")};window.addEventListener("orientationchange"in window?"orientationchange":"resize",a,!1);a()}(document,window);
+</script>
+</head>
+<body>
+    <div id="container"></div>
+
+<script type="text/javascript">
+
+    var config = {
+        type: Phaser.AUTO,
+        width: 750,
+        height: 1624,
+        backgroundColor: '#2d2d2d',
+        parent: 'container',
+        scene: {
+            preload: preload,
+            create: create,
+            update: update
+        }
+    }
+
+    var game = new Phaser.Game(config);
+
+    var group1;
+    var group2;
+    var group3;
+    var group4;
+
+    var circle1;
+    var circle2;
+    var circle3;
+    var circle4;
+
+    function preload() {
+        this.load.image('ball', 'assets/shinyball.png');
+    }
+
+    function create() {
+        group1 = this.add.group({ key: 'ball', frameQuantity: 36 });
+        group2 = this.add.group({ key: 'ball', frameQuantity: 32 });
+        group3 = this.add.group({ key: 'ball', frameQuantity: 26 });
+        group4 = this.add.group({ key: 'ball', frameQuantity: 16 });
+
+        circle1 = new Phaser.Geom.Circle(375, 812, 200);
+        circle2 = new Phaser.Geom.Circle(375, 812, 160);
+        circle3 = new Phaser.Geom.Circle(375, 812, 120);
+        circle4 = new Phaser.Geom.Circle(375, 812, 80);
+
+        Phaser.Actions.PlaceOnCircle(group1.getChildren(), circle1);
+        Phaser.Actions.PlaceOnCircle(group2.getChildren(), circle2);
+        Phaser.Actions.PlaceOnCircle(group3.getChildren(), circle3);
+        Phaser.Actions.PlaceOnCircle(group4.getChildren(), circle4);
+    }
+
+    function update() {
+        Phaser.Actions.RotateAroundDistance(group1.getChildren(), circle1, -0.030, circle1.radius);
+        Phaser.Actions.RotateAroundDistance(group2.getChildren(), circle2, 0.025, circle2.radius);
+        Phaser.Actions.RotateAroundDistance(group3.getChildren(), circle3, -0.020, circle3.radius);
+        Phaser.Actions.RotateAroundDistance(group4.getChildren(), circle4, 0.015, circle4.radius);
+    }
+</script>
+
+</body>
+</html>
