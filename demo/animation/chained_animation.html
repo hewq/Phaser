@@ -1,0 +1,46 @@
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8" />
+    <title>Chained Animation</title>
+    <link rel="stylesheet" href="../main.css">
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.20.1/dist/phaser.js"></script>
+    <script>
+!function(b,a){var c=b.documentElement;a=function(){var a=c.clientWidth;a&&(c.style.fontSize=a/375*100+"px")};window.addEventListener("orientationchange"in window?"orientationchange":"resize",a,!1);a()}(document,window);
+</script>
+</head>
+<body>
+    <div id="container"></div>
+
+<script type="text/javascript">
+
+    var config = {
+        type: Phaser.AUTO,
+        width: 750,
+        height: 1624,
+        parent: 'container',
+        scene: {
+            preload: preload,
+            create: create
+        }
+    }
+
+    var game = new Phaser.Game(config);
+
+    function preload() {
+        this.load.atlas('gems', 'assets/gems.png', 'assets/gems.json');
+    }
+
+    function create() {
+        this.anims.create({ key: 'diamond', frames: this.anims.generateFrameNames('gems', { prefix: 'diamond_', end: 15, zeroPad: 4}), repeat: 4 });
+        this.anims.create({ key: 'ruby', frames: this.anims.generateFrameNames('gems', { prefix: 'ruby_', end: 6, zeroPad: 4 }), repeat: 8 });
+
+        var gem = this.add.sprite(400, 300, 'gems').setScale(4);
+
+        gem.play('diamond');
+
+        gem.anims.chain('ruby');
+    }
+</script>
+
+</body>
+</html>

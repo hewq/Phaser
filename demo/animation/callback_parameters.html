@@ -1,0 +1,62 @@
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8" />
+    <title>Animation Repeat Event</title>
+    <link rel="stylesheet" href="../main.css">
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.20.1/dist/phaser.js"></script>
+    <script>
+!function(b,a){var c=b.documentElement;a=function(){var a=c.clientWidth;a&&(c.style.fontSize=a/375*100+"px")};window.addEventListener("orientationchange"in window?"orientationchange":"resize",a,!1);a()}(document,window);
+</script>
+</head>
+<body>
+    <div id="container"></div>
+
+<script type="text/javascript">
+
+    var config = {
+        type: Phaser.AUTO,
+        width: 750,
+        height: 1624,
+        parent: 'container',
+        scene: {
+            preload: preload,
+            create: create
+        }
+    }
+
+    var game = new Phaser.Game(config);
+
+    function preload() {
+        this.load.atlas('gems', 'assets/gems.png', 'assets/gems.json');
+    }
+
+    function create() {
+        var marker = this.add.sprite(400, 400, 'gems', 'ruby_0000');
+
+        var animConfig = {
+            key: 'diamond',
+            frames: this.anims.generateFrameNames('gems', { prefix: 'diamond_', end: 15, zeroPad: 4 }),
+            repeat: 6,
+            onRepeat: animRepeatCallback,
+            onRepeatParams: [ marker ]
+        };
+
+        this.anims.create(animConfig);
+
+        // Play the animation.
+        // Each time it repeats it calls on the onRepeat callback,
+        // and passes over the array contents defined in onRepeatParams, after the default parameters
+        
+        this.add.sprite(200, 400, 'gems').play('diamond');
+    }
+
+    // The first two callback arguments are always the sprite on which the animation is playing and the animation itself.
+    // Following this comes whatever you specify in the params array(in this case onRepeatParams)
+    function animRepeatCallback(sprite, animation, param1) {
+        console.log(param1);
+        param1.y -= 32;
+    }
+</script>
+
+</body>
+</html>
