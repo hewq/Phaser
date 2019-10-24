@@ -1,0 +1,61 @@
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8" />
+    <title>On Complete Callback</title>
+    <link rel="stylesheet" href="../main.css">
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.20.1/dist/phaser.js"></script>
+    <script>
+!function(b,a){var c=b.documentElement;a=function(){var a=c.clientWidth;a&&(c.style.fontSize=a/375*100+"px")};window.addEventListener("orientationchange"in window?"orientationchange":"resize",a,!1);a()}(document,window);
+</script>
+</head>
+<body>
+    <div id="container"></div>
+
+<script type="text/javascript">
+
+    var config = {
+        type: Phaser.AUTO,
+        width: 750,
+        height: 1624,
+        parent: 'container',
+        scene: {
+            preload: preload,
+            create: create
+        }
+    }
+
+    var game = new Phaser.Game(config);
+
+    function preload() {
+        this.load.atlas('gems', 'assets/gems.png', 'assets/gems.json');
+    }
+
+    function create() {
+        var animConfig = {
+            key: 'diamond',
+            frames: this.anims.generateFrameNames('gems', { prefix: 'diamond_', end: 15, zeroPad: 4}),
+            repeat: 2
+        };
+
+        this.anims.create(animConfig);
+
+        gem = this.add.sprite(400, 300, 'gems');
+
+        // Animation will repeat twice and then emit the event
+        gem.on('animationcomplete', animComplete, this);
+
+        gem.play('diamond');
+    }
+
+    function animComplete(animation, frame) {
+        // Animation is over, let's fade the sprite out
+        this.tweens.add({
+            targets: gem,
+            duration: 3000,
+            alpha: 0
+        })
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,62 @@
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8" />
+    <title>Muybridge</title>
+    <link rel="stylesheet" href="../main.css">
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.20.1/dist/phaser.js"></script>
+    <script>
+!function(b,a){var c=b.documentElement;a=function(){var a=c.clientWidth;a&&(c.style.fontSize=a/375*100+"px")};window.addEventListener("orientationchange"in window?"orientationchange":"resize",a,!1);a()}(document,window);
+</script>
+</head>
+<body>
+    <div id="container"></div>
+
+<script type="text/javascript">
+
+    var config = {
+        type: Phaser.AUTO,
+        width: 750,
+        height: 1624,
+        parent: 'container',
+        scene: {
+            preload: preload,
+            create: create
+        }
+    }
+
+    var game = new Phaser.Game(config);
+
+    function preload() {
+        this.load.spritesheet('muybridge', 'assets/muybridge01.png', { frameWidth: 119, frameHeight: 228});
+    }
+
+    function create() {
+        var config = {
+            key: 'run',
+            frames: 'muybridge',
+            frameRate: 15,
+            repeat: -1
+        }
+
+        this.anims.create(config);
+
+        // Each frame is 119px wide
+        group = this.add.group();
+
+        group.createMultiple({ key: 'muybridge', frame: 0, repeat: 6 });
+
+        Phaser.Actions.GridAlign(group.getChildren(), {
+            width: 7,
+            height: 1,
+            cellWidth: 119,
+            y: 170
+        });
+
+        // staggerPlay(key, children [, stagger])
+        // stagger：时间偏移量
+        this.anims.staggerPlay('run', group.getChildren(), -100);
+    }
+</script>
+
+</body>
+</html>

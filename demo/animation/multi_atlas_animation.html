@@ -1,0 +1,43 @@
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8" />
+    <title>Multi Atlas Animation</title>
+    <link rel="stylesheet" href="../main.css">
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.20.1/dist/phaser.js"></script>
+    <script>
+!function(b,a){var c=b.documentElement;a=function(){var a=c.clientWidth;a&&(c.style.fontSize=a/375*100+"px")};window.addEventListener("orientationchange"in window?"orientationchange":"resize",a,!1);a()}(document,window);
+</script>
+</head>
+<body>
+    <div id="container"></div>
+
+<script type="text/javascript">
+
+    var config = {
+        type: Phaser.AUTO,
+        width: 750,
+        height: 1624,
+        parent: 'container',
+        scene: {
+            preload: preload,
+            create: create
+        }
+    }
+
+    var game = new Phaser.Game(config);
+
+    function preload() {
+        this.load.path = 'assets/';
+
+        this.load.multiatlas('cybercity', 'cybercity-multi.json');
+    }
+
+    function create() {
+        this.anims.create({ key: 'fly', frames: this.anims.generateFrameNames('cybercity', { start: 0, end: 98 }), repeat: -1 });
+
+        this.add.sprite(400, 300).setScale(2.7).play('fly');
+    }
+</script>
+
+</body>
+</html>
