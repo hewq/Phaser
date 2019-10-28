@@ -1,0 +1,64 @@
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8" />
+    <title>Set Multiple Values</title>
+    <link rel="stylesheet" href="../main.css">
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.20.1/dist/phaser.js"></script>
+    <script>
+!function(b,a){var c=b.documentElement;a=function(){var a=c.clientWidth;a&&(c.style.fontSize=a/375*100+"px")};window.addEventListener("orientationchange"in window?"orientationchange":"resize",a,!1);a()}(document,window);
+</script>
+</head>
+<body>
+    <div id="container"></div>
+
+<script type="text/javascript">
+
+    var config = {
+        type: Phaser.WEBGL,
+        width: 750,
+        height: 1624,
+        backgroundColor: '#2d2d2d',
+        parent: 'container',
+        scene: {
+            preload: preload,
+            create: create
+        }
+    }
+
+    var game = new Phaser.Game(config);
+
+    function preload() {
+        this.load.image('gem', 'assets/gem.png');
+    }
+
+    function create() {
+        var text = this.add.text(350, 270, '', { font: '16px Courier', fill: '#00ff00' });
+
+        var gem = this.add.image(300, 300, 'gem');
+
+        // Store some data about this Gem:
+        gem.setData({ name: 'Red Gem Stone', level: 2, owner: 'Link', 'gold': 50 });
+
+        // Whenever a data value is updated the `changedata` event is fired and we listen for it:
+        gem.on('changedata', function (gameObject, key, value) {
+            text.setText([
+                'Name: ' + gem.getData('name'),
+                'Level: ' + gem.getData('level'),
+                'Value: ' + gem.getData('gold') + ' gold',
+                'Owner: ' + gem.getData('owner')
+            ]);
+        });
+
+        // Change the 'value' property when the mouse is clicked
+        this.input.on('pointerdown', function () {
+            gem.data.values.gold += 50;
+
+            if (gem.data.values.gold % 200 === 0) {
+                gem.data.values.level++;
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

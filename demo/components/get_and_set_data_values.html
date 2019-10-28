@@ -1,0 +1,59 @@
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8" />
+    <title>Get And Set Data Values</title>
+    <link rel="stylesheet" href="../main.css">
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.20.1/dist/phaser.js"></script>
+    <script>
+!function(b,a){var c=b.documentElement;a=function(){var a=c.clientWidth;a&&(c.style.fontSize=a/375*100+"px")};window.addEventListener("orientationchange"in window?"orientationchange":"resize",a,!1);a()}(document,window);
+</script>
+</head>
+<body>
+    <div id="container"></div>
+
+<script type="text/javascript">
+
+    var config = {
+        type: Phaser.WEBGL,
+        width: 750,
+        height: 1624,
+        backgroundColor: '#2d2d2d',
+        parent: 'container',
+        scene: {
+            preload: preload,
+            create: create
+        }
+    }
+
+    var game = new Phaser.Game(config);
+
+    function preload() {
+        this.load.image('gem', 'assets/gem.png');
+    }
+
+    function create() {
+        var gem = this.add.image(300, 300, 'gem');
+
+        // Store some data about this Gem:
+        
+        gem.setDataEnabled();
+
+        gem.data.set('name', 'Red Gem Stone');
+        gem.data.set('level', 2);
+        gem.data.set('gold', 150);
+        gem.data.set('owner', 'link');
+
+        // Display it
+        var text = this.add.text(350, 250, '', {font: '16px Courier', fill: '#00ff00'});
+
+        text.setText([
+            'Name: ' + gem.data.get('name'),
+            'Level: ' + gem.data.get('level'),
+            'Value: ' + gem.data.get('gold') + ' gold',
+            'Owner: ' + gem.data.get('owner')
+        ]);
+    }
+</script>
+
+</body>
+</html>

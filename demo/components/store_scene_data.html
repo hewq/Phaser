@@ -1,0 +1,46 @@
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8" />
+    <title>Store Scene Data</title>
+    <link rel="stylesheet" href="../main.css">
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.20.1/dist/phaser.js"></script>
+    <script>
+!function(b,a){var c=b.documentElement;a=function(){var a=c.clientWidth;a&&(c.style.fontSize=a/375*100+"px")};window.addEventListener("orientationchange"in window?"orientationchange":"resize",a,!1);a()}(document,window);
+</script>
+</head>
+<body>
+    <div id="container"></div>
+
+<script type="text/javascript">
+
+    var config = {
+        type: Phaser.WEBGL,
+        width: 750,
+        height: 1624,
+        backgroundColor: '#2d2d2d',
+        parent: 'container',
+        scene: {
+            create: create
+        }
+    }
+
+    var game = new Phaser.Game(config);
+
+    function create() {
+        // Using the Scene Data Plugin we can store data on a Scene level
+        this.data.set('lives', 3);
+        this.data.set('level', 5);
+        this.data.set('score', 2000);
+
+        var text = this.add.text(100, 100, '', { font: '64px Courier', fill: '#00ff00' });
+
+        text.setText([
+            'Level: ' + this.data.get('level'),
+            'Lives: ' + this.data.get('lives'),
+            'Score: ' + this.data.get('score')
+        ]);
+    }
+</script>
+
+</body>
+</html>
