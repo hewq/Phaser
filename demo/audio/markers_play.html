@@ -1,0 +1,104 @@
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8" />
+    <title>Markers Play</title>
+    <link rel="stylesheet" href="../main.css">
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.20.1/dist/phaser.js"></script>
+    <script type="text/javascript" src="../dat.gui.min.js"></script>
+    <script>
+!function(b,a){var c=b.documentElement;a=function(){var a=c.clientWidth;a&&(c.style.fontSize=a/375*100+"px")};window.addEventListener("orientationchange"in window?"orientationchange":"resize",a,!1);a()}(document,window);
+</script>
+</head>
+<body>
+    <div id="container"></div>
+
+<script type="text/javascript">
+
+    var config = {
+        type: Phaser.AUTO,
+        width: 750,
+        height: 1624,
+        backgroundColor: '#2d2d2d',
+        parent: 'container',
+        pixelArt: true,
+        audio: {
+            disableWebAudio: true
+        },
+        scene: {
+            preload: preload,
+            create: create
+        }
+    }
+
+    var game = new Phaser.Game(config);
+
+    function preload() {
+        this.load.image('title', 'assets/catastrophi.png');
+
+        this.load.spritesheet('button', 'assets/flixel-button.png', { frameWidth: 80, frameHeight: 20 });
+        this.load.bitmapFont('nokia', 'assets/nokia16black.png', 'assets/nokia16black.xml');
+
+        this.load.audio('sfx', [
+            'assets/magical_horror_audiosprite.ogg',
+            'assets/magical_horror_audiosprite.mp3'
+        ], {
+            instances: 4
+        });
+    }
+
+    var markers = [
+        { name: 'alien death', start: 1, duration: 1.0, config: {} },
+        { name: 'bass hit', start: 3, duration: 0.5, config: {} },
+        { name: 'escape', start: 4, duration: 3.2, config: {} },
+        { name: 'meow', start: 8, duration: 0.5, config: {} },
+        { name: 'numkey', start: 9, duration: 0.1, config: {} },
+        { name: 'ping', start: 10, duration: 1.0, config: {} },
+        { name: 'death', start: 12, duration: 4.2, config: {} },
+        { name: 'shot', start: 17, duration: 1.0, config: {} },
+        { name: 'squit', start: 19, duration: 0.3, config: {} }
+    ];
+
+    function create() {
+        this.add.image(400, 300, 'title');
+
+        for (var i = 0; i < markers.length; i++) {
+            makeButton.call(this, markers[i].name, i);
+        }
+
+        this.input.on('gameobjectover', function (pointer, button) {
+            setButtonFrame(button, 0);
+        });
+
+        this.input.on('gameobjectout', function (pointer, button) {
+            setButtonFrame(button, 1);
+        });
+
+        this.input.on('gameobjectdown', function (pointer, button) {
+            var index = button.getData('index');
+
+            this.sound.play('sfx', markers[index]);
+
+            setButtonFrame(button, 2);
+        }, this);
+
+        this.input.on('gameobjectup', function (pointer, button) {
+            setButtonFrame(button, 0);
+        });
+    }
+
+    function makeButton(name, index) {
+        var button = this.add.image(680, 115 + index * 40, 'button', 1).setInteractive();
+        button.setData('index', index);
+        button.setScale(2, 1.5);
+
+        var text = this.add.bitmapText(button.x - 40, button.y - 8, 'nokia', name, 16);
+        text.x += (button.width - text.width) / 2;
+    }
+
+    function setButtonFrame(button, frame) {
+        button.frame = button.scene.textures.getFrame('button', frame);
+    }
+</script>
+
+</body>
+</html>
