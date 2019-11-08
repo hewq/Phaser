@@ -1,0 +1,68 @@
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8" />
+    <title>Depth Sorting</title>
+    <link rel="stylesheet" href="../main.css">
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.20.1/dist/phaser.js"></script>
+    <script type="text/javascript" src="../dat.gui.min.js"></script>
+    <script>
+!function(b,a){var c=b.documentElement;a=function(){var a=c.clientWidth;a&&(c.style.fontSize=a/375*100+"px")};window.addEventListener("orientationchange"in window?"orientationchange":"resize",a,!1);a()}(document,window);
+</script>
+</head>
+<body>
+    <div id="container"></div>
+
+<script type="text/javascript">
+    var config = {
+        type: Phaser.WEBGL,
+        parent: 'container',
+        width: 750,
+        height: 1624,
+        scene: {
+            preload: preload,
+            create: create,
+            update: update
+        }
+    };
+
+    var move = 0;
+    var mushroom0;
+    var mushroom1;
+    var mushroom2;
+
+    var game = new Phaser.Game(config);
+
+    function preload() {
+        this.load.atlas('atlas', 'assets/veg.png', 'assets/veg.json');
+        this.load.image('image', 'assets/mushroom2.png');
+    }
+
+    function create() {
+        for (var i = 0; i < 2000; i++) {
+            var image = this.add.image(100 + Math.random() * 600, 100 + Math.random() * 400, 'atlas', 'veg0' + Math.floor(1 + Math.random() * 9));
+            image.depth = image.y;
+        }
+
+        mushroom0 = this.add.image(400, 300, 'image');
+        mushroom1 = this.add.image(400, 300, 'image');
+        mushroom2 = this.add.image(400, 300, 'image');
+    }
+
+    function update() {
+        mushroom0.x = 400 + Math.cos(move) * 200;
+        mushroom0.y = 300 + Math.sin(move) * 200;
+        mushroom0.depth = mushroom0.y - mushroom0.height / 2;
+
+        mushroom1.x = 400 + Math.sin(-move) * 200;
+        mushroom1.y = 300 + Math.cos(-move) * 200;
+        mushroom1.depth = mushroom1.y;
+
+        mushroom2.y = 300 + Math.sin(move) * 180;
+        mushroom2.depth = mushroom2.y + mushroom2.height / 2;
+
+        move += 0.01;
+    }
+</script>
+
+</body>
+</html>
