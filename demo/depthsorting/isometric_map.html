@@ -181,7 +181,7 @@
         skeletons.push(this.add.existing(new Skeleton(this, 1500, 340, 'walk', 'southWest', 340)));
         skeletons.push(this.add.existing(new Skeleton(this, 1550, 360, 'walk', 'southWest', 330)));
         
-        this.cameras.main.setSize(1600, 600);
+        this.cameras.main.setSize(1600, 1000);
     }
 
     function buildMap() {
@@ -194,6 +194,7 @@
         tileHeightHalf = tileheight / 2;
 
         var layer = data.layers[0].data;
+
 
         var mapwidth = data.layers[0].width;
         var mapheight = data.layers[0].height;
