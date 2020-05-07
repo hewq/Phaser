@@ -80,6 +80,7 @@
             }
             moveHandler(pointer) {
                 if (!this.inArea) return true
+                if (this.matchRow || this.matchCol) return true
 
                 let vector = new Phaser.Math.Vector2(pointer.x - pointer.downX, pointer.y - pointer.downY)
 
@@ -196,89 +197,185 @@
                 this.curRow = Math.floor(row)
                 this.curCol = Math.floor(col)
             }
-            checkMatch(arr, col, colIndex) {
-                if (arr.length >= 3) {
-                    if (arr[0].rows !== 0) {
-                        let bottomRow = arr[arr.length - 1].rows
-                        for (let i = arr[0].rows; i > 0; i--) { // 下移的球
-                            this.movedItem.push(col[i - 1])
-                            this.itemArr[colIndex][bottomRow--] = col[i - 1]
-                            this.itemArr[colIndex][bottomRow + 1].columns = colIndex
-                            this.itemArr[colIndex][bottomRow + 1].rows = bottomRow + 1
-                        }
+            checkMatchCol(arr, col, colIndex) {
+                if (this.matchRow) return
+                this.matchCol = true
+                this.movedItemCol = []
+
+                if (arr[0].rows !== 0) {
+                    let bottomRow = arr[arr.length - 1].rows
+                    for (let i = arr[0].rows; i > 0; i--) { // 下移的球
+                        this.movedItemCol.push(col[i - 1])
+                        this.itemArr[colIndex][bottomRow--] = col[i - 1]
+                        this.itemArr[colIndex][bottomRow + 1].columns = colIndex
+                        this.itemArr[colIndex][bottomRow + 1].rows = bottomRow + 1
                     }
-
-                    let len = arr.length
-                    for (let i = 0; i < arr.length; i++) { // 消失的球
-                        let iconX = arr[0].x
-                        let iconY = -1 * gameOptions.iconH * (i + 1)
-                        let type = Phaser.Math.Between(0, gameOptions.iconNum - 1)
-
-                        let icon = this.add.sprite(iconX, iconY, 'sprite', type)
-                        icon.setOrigin(0, 0)
-                        icon.rows = --len
-                        icon.columns = colIndex
-                        icon.type = type
-
-                        this.itemArr[colIndex][icon.rows] = icon
-                        this.itemContainer.add(icon)
-                        this.movedItem.push(icon)
-
-                        icon.x = iconX
-                        icon.y = iconY
-                    }
-                    len = arr.length
-                    this.tweens.add({
-                        targets: arr,
-                        duration: 400,
-                        alpha: 0,
-                        onComplete: () => {
-                            console.log(this.itemArr)
-                            console.log(arr)
-                            this.tweens.add({
-                                targets: this.movedItem,
-                                duration: 300,
-                                y: (target, name, value) => {
-                                    return value + (len * 100)
-                                },
-                                onComplete: () => {
-                                    this.traversal()
-                                }
-                            })
-                        }
-                    })
                 }
+
+                let len = arr.length
+                for (let i = 0; i < arr.length; i++) { // 消失的球
+                    let iconX = arr[0].x
+                    let iconY = -1 * gameOptions.iconH * (i + 1)
+                    let type = Phaser.Math.Between(0, gameOptions.iconNum - 1)
+
+                    let icon = this.add.sprite(iconX, iconY, 'sprite', type)
+                    this.itemContainer.add(icon)
+                    icon.setOrigin(0, 0)
+                    icon.rows = --len
+                    icon.columns = colIndex
+                    icon.type = type
+
+                    this.itemArr[colIndex][icon.rows] = icon
+                    this.movedItemCol.push(icon)
+
+                    icon.x = iconX
+                    icon.y = iconY
+                }
+                len = arr.length
+                this.tweens.add({
+                    targets: arr,
+                    duration: 400,
+                    alpha: 0,
+                    onComplete: () => {
+                        this.tweens.add({
+                            targets: this.movedItemCol,
+                            duration: 300,
+                            y: (target, name, value) => {
+                                return value + (len * 100)
+                            },
+                            onComplete: () => {
+                                this.matchCol = false
+                                console.log(this.itemArr)
+                                    // this.traversal()
+                            }
+                        })
+                    }
+                })
+            }
+            checkMatchRow(arr) {
+                if (this.matchCol) return
+                this.matchRow = true
+
+                this.movedItemRow = []
+                let rowIndex = arr[0].rows
+                let bottomRow = rowIndex
+                let range = parseInt(arr[0].columns) + parseInt(arr.length)
+                for (let col = arr[0].columns; col < range; col++) {
+                    bottomRow = rowIndex
+                    for (let j = 0; j < rowIndex; j++) {
+                        this.itemArr[col][bottomRow] = this.itemArr[col][--bottomRow]
+                        this.movedItemRow.push(this.itemArr[col][bottomRow])
+                    }
+
+                    let iconX = this.itemArr[col][1].x
+                    let iconY = -100
+                    let type = Phaser.Math.Between(0, gameOptions.iconNum - 1)
+
+                    let icon = this.add.sprite(iconX, iconY, 'sprite', type)
+                    this.itemContainer.add(icon)
+                    icon.setOrigin(0, 0)
+                    icon.rows = 0
+                    icon.columns = col
+                    icon.type = type
+
+                    this.itemArr[col][0] = icon
+                    this.movedItemRow.push(icon)
+
+                    icon.x = iconX
+                    icon.y = iconY
+                }
+
+                this.tweens.add({
+                    targets: arr,
+                    duration: 400,
+                    alpha: 0,
+                    onComplete: () => {
+                        this.tweens.add({
+                            targets: this.movedItemRow,
+                            duration: 300,
+                            y: (target, name, value) => {
+                                return value + 100
+                            },
+                            onComplete: () => {
+                                this.matchRow = false
+                                console.log(this.itemArr)
+                                    // this.traversal()
+                            }
+                        })
+                    }
+                })
             }
             traversal() {
+                this.traversalCol()
+                this.traversalRow()
+            }
+            traversalCol() {
                 let matching = false
-                this.movedItem = []
                 let lastType = -1
                 let matchArr = []
+                let col
+                let item
                     // 判断列
-                this.itemArr.map((col, colIndex) => {
+                for (let colIndex in this.itemArr) {
+                    col = this.itemArr[colIndex]
                     lastType = -1
                     matchArr = []
-                    col.map((item, index) => {
+                    for (let index in col) {
+                        item = col[index]
                         matchArr.push(item)
                         if (lastType === item.type) {
                             !matching && matchArr.unshift(col[index - 1])
                             matching = true
                             if (index === gameOptions.rows - 1) {
                                 if (matchArr.length >= 3) {
-                                    this.checkMatch(matchArr, col, colIndex)
+                                    this.checkMatchCol(matchArr, col, colIndex)
+                                    return
                                 }
                             }
                         } else {
                             matchArr.pop()
                             matching = false
                             if (matchArr.length >= 3) {
-                                this.checkMatch(matchArr, col, colIndex)
+                                this.checkMatchCol(matchArr, col, colIndex)
+                                return
                             }
                             matchArr = []
                         }
                         lastType = item.type
-                    })
-                })
+                    }
+                }
+            }
+            traversalRow() {
+                let lastType = -1
+                let matchArr = []
+                let matching = false
+                let item
+                for (let row = 0; row < gameOptions.rows; row++) {
+                    lastType = -1
+                    for (let col = 0; col < gameOptions.columns; col++) {
+                        item = this.itemArr[col][row]
+                        matchArr.push(item)
+                        if (lastType === item.type) {
+                            !matching && matchArr.unshift(this.itemArr[col - 1][row])
+                            matching = true
+                            if (row === gameOptions.rows - 1) {
+                                if (matchArr.length >= 3) {
+                                    this.checkMatchRow(matchArr)
+                                    return
+                                }
+                            }
+                        } else {
+                            matchArr.pop()
+                            matching = false
+                            if (matchArr.length >= 3) {
+                                this.checkMatchRow(matchArr)
+                                return
+                            }
+                            matchArr = []
+                        }
+                        lastType = item.type
+                    }
+                }
             }
             resetPos() {
                 if (this.movingDir === gameOptions.movingY) {
@@ -318,6 +415,7 @@
                         this.itemContainer.add(icon)
                     }
                 }
+                this.traversal()
             }
         }
 
