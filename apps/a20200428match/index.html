@@ -214,7 +214,7 @@
 
                 let len = arr.length
                 for (let i = 0; i < arr.length; i++) { // 消失的球
-                    let iconX = arr[0].x
+                    let iconX = parseInt(arr[0].columns) * 100
                     let iconY = -1 * gameOptions.iconH * (i + 1)
                     let type = Phaser.Math.Between(0, gameOptions.iconNum - 1)
 
@@ -230,6 +230,9 @@
 
                     icon.x = iconX
                     icon.y = iconY
+                    console.log(arr[0].x)
+                    console.log('===========')
+                    console.log(icon.x)
                 }
                 len = arr.length
                 this.tweens.add({
@@ -326,7 +329,6 @@
                             !matching && matchArr.unshift(col[index - 1])
                             matching = true
                             if (+index === gameOptions.rows - 1) {
-                                console.log(matchArr)
                                 if (matchArr.length >= 3) {
                                     this.checkMatchCol(matchArr, col, colIndex)
 
