@@ -92,7 +92,7 @@
                             if (colIndex === this.curCol) {
                                 col.map((item, index) => {
                                     this.movingItem.push(item)
-                                    item.y = (gameAreaH + index * gameOptions.iconH + vector.y) % gameAreaH
+                                    item.y = (gameAreaH + (index * gameOptions.iconH + vector.y) % gameAreaH) % gameAreaH
                                 })
                                 if (this.dir > 0) {
                                     this.tempItem.setFrame(this.movingItem[this.movingItem.length - 1 - Math.floor(vector.y % gameAreaH / gameOptions.iconH)].type)
