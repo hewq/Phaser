@@ -245,8 +245,7 @@
                             },
                             onComplete: () => {
                                 this.matchCol = false
-                                console.log(this.itemArr)
-                                    // this.traversal()
+                                this.traversal()
                             }
                         })
                     }
@@ -264,6 +263,7 @@
                     bottomRow = rowIndex
                     for (let j = 0; j < rowIndex; j++) {
                         this.itemArr[col][bottomRow] = this.itemArr[col][--bottomRow]
+                        this.itemArr[col][bottomRow].rows += 1
                         this.movedItemRow.push(this.itemArr[col][bottomRow])
                     }
 
@@ -298,8 +298,7 @@
                             },
                             onComplete: () => {
                                 this.matchRow = false
-                                console.log(this.itemArr)
-                                    // this.traversal()
+                                this.traversal()
                             }
                         })
                     }
@@ -326,9 +325,11 @@
                         if (lastType === item.type) {
                             !matching && matchArr.unshift(col[index - 1])
                             matching = true
-                            if (index === gameOptions.rows - 1) {
+                            if (+index === gameOptions.rows - 1) {
+                                console.log(matchArr)
                                 if (matchArr.length >= 3) {
                                     this.checkMatchCol(matchArr, col, colIndex)
+
                                     return
                                 }
                             }
@@ -337,6 +338,7 @@
                             matching = false
                             if (matchArr.length >= 3) {
                                 this.checkMatchCol(matchArr, col, colIndex)
+
                                 return
                             }
                             matchArr = []
@@ -361,6 +363,7 @@
                             if (row === gameOptions.rows - 1) {
                                 if (matchArr.length >= 3) {
                                     this.checkMatchRow(matchArr)
+
                                     return
                                 }
                             }
@@ -369,6 +372,7 @@
                             matching = false
                             if (matchArr.length >= 3) {
                                 this.checkMatchRow(matchArr)
+
                                 return
                             }
                             matchArr = []
