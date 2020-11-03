@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RUN AROUND</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="game"></div>
+    <script src="/public/js/phaser.min.js"></script>
+    <script>
+        let game;
+
+        let gameOptions = {
+            // 大圆半径, px
+            bigCircleRadius: 300,
+
+            // 圆环宽度， px
+            bigCircleThickness: 20,
+
+            // 小球半径，px
+            playerRadius: 25,
+
+            // 小球速度， degrees per frame
+            playerSpeed: 0.6,
+
+            // 重力
+            worldGravity: 0.8,
+
+            // 弹跳力
+            jumpForce: [12, 8]
+        };
+
+        class playGame extends Phaser.Scene {
+            constructor() {
+                super('PlayGame');
+            }
+            preload() {
+                this.load.image('player', 'player.png');
+            }
+            create() {
+                // 已绘制的弧线
+                this.paintedArcs = [];
+
+                // 绘制大圆
+                this.bigCircle = this.add.graphics();
+                this.bigCircle.lineStyle(gameOptions.bigCircleThickness, 0xffffff);
+                this.bigCircle.strokeCircle(game.config.width / 2, game.config.height / 2, gameOptions.bigCircleRadius);
+
+                // 着色的弧线
+                this.highlightCircle = this.add.graphics();
+
+                // 计算小球到 canvas 中心的距离
+                this.distanceFromCenter = gameOptions.bigCircleRadius - gameOptions.playerRadius - gameOptions.bigCircleThickness / 2;
+
+                // 小球
+                this.player = this.add.sprite(game.config.width / 2, game.config.height / 2 - this.distanceFromCenter, 'player');
+
+                // 当前角度
+                this.player.currentAngle = -90;
+
+                // 上一帧的角度
+                this.player.previousAngle = this.player.currentAngle;
+
+                // 跳跃偏移量
+                this.player.jumpOffset = 0;
+
+                // 弹跳次数
+                this.player.jumps = 0;
+
+                // 监听事件
+                this.input.on('pointerdown', function() {
+                    if (this.player.jumps < 2) {
+                        this.player.jumps++;
+
+                        this.player.jumpForce = gameOptions.jumpForce[this.player.jumps - 1]
+                    }
+                }, this);
+
+                // 显示进度
+                this.levelText = this.add.text(game.config.width / 2, game.config.height / 2, '', {
+                    fontFamily: 'Arial',
+                    fontSize: 96,
+                    color: '#00ff00'
+                });
+                this.levelText.setOrigin(0.5);
+            }
+            update() {
+
+                // 弹跳
+                if (this.player.jumps > 0) {
+                    // 根据弹跳力增加偏移量
+                    this.player.jumpOffset += this.player.jumpForce;
+
+                    // 通过降低弹跳力来模拟重力
+                    this.player.jumpForce -= gameOptions.worldGravity;
+
+                    // 小球落地
+                    if (this.player.jumpOffset < 0) {
+                        this.player.jumpOffset = 0;
+                        this.player.jumps = 0;
+                        this.player.jumpForce = 0;
+                    }
+                }
+
+                this.player.previousAngle = this.player.currentAngle;
+
+                // 用弧度表示
+                this.player.currentAngle = Phaser.Math.Angle.WrapDegrees(this.player.currentAngle + gameOptions.playerSpeed)
+
+                // 非弹跳状态
+                if (this.player.jumpOffset === 0) {
+
+                    // 设置绘制比率为 0
+                    this.paintedRatio = 0;
+
+                    // 转换角度
+                    let currentAngle = this.getGameAngle(this.player.currentAngle);
+                    let previousAngle = this.getGameAngle(this.player.previousAngle);
+
+                    if (currentAngle >= previousAngle) {
+                        this.paintedArcs.push([previousAngle, currentAngle])
+                    } else {
+                        this.paintedArcs.push([previousAngle, 360]);
+                        this.paintedArcs.push([0, currentAngle]);
+                    }
+
+                    this.highlightCircle.clear();
+                    this.highlightCircle.lineStyle(gameOptions.bigCircleThickness, 0xff00ff);
+
+                    // 将小弧线合成大弧线
+                    this.paintedArcs = this.mergeIntervals(this.paintedArcs);
+
+                    this.paintedArcs.forEach(function(i) {
+                        this.paintedRatio += (i[1] - i[0]);
+
+                        this.highlightCircle.beginPath();
+                        this.highlightCircle.arc(game.config.width / 2, game.config.height / 2, gameOptions.bigCircleRadius, Phaser.Math.DegToRad(i[0] - 90), Phaser.Math.DegToRad(i[1] - 90), false);
+                        this.highlightCircle.strokePath();
+                    }.bind(this));
+
+                    // 将所有弧长转换为 0 - 100 的值
+                    this.paintedRatio = Math.round(this.paintedRatio * 100 / 360);
+
+                    this.levelText.setText(this.paintedRatio + '%');
+
+                    if (this.paintedRatio === 100) {
+
+                        // 2 秒后重启
+                        this.time.addEvent({
+                            delay: 2000,
+                            callbackScope: this,
+                            callback: function() {
+                                this.scene.start('PlayGame');
+                            }
+                        });
+                    }
+                }
+
+                let radians = Phaser.Math.DegToRad(this.player.currentAngle);
+
+                let distanceFromCenter = this.distanceFromCenter - this.player.jumpOffset;
+
+                this.player.x = game.config.width / 2 + distanceFromCenter * Math.cos(radians);
+                this.player.y = game.config.height / 2 + distanceFromCenter * Math.sin(radians);
+
+                // 小球自转
+                let revolutions = gameOptions.bigCircleRadius / gameOptions.playerRadius;
+                this.player.angle = -this.player.currentAngle * revolutions;
+            }
+
+            getGameAngle(angle) {
+                let gameAngle = angle + 90;
+                if (gameAngle < 0) {
+                    gameAngle += 360;
+                }
+                return gameAngle;
+            }
+
+            mergeIntervals(intervals) {
+                if (intervals.length <= 1) {
+                    return intervals;
+                }
+
+                let stack = [];
+                let top = null;
+                intervals = intervals.sort(function(a, b) {
+                    return a[0] - b[0];
+                });
+                stack.push(intervals[0]);
+                for (let i = 1; i < intervals.length; i++) {
+                    top = stack[stack.length - 1];
+                    if (top[1] < intervals[i][0]) {
+                        stack.push(intervals[i]);
+                    } else {
+                        if (top[1] < intervals[i][1]) {
+                            top[1] = intervals[i][1];
+                            stack.pop();
+                            stack.push(top);
+                        }
+                    }
+                }
+                return stack;
+            }
+        }
+
+        let gameConfig = {
+            type: Phaser.CANVAS,
+            backgroundColor: 0x444444,
+            scale: {
+                mode: Phaser.Scale.FIT,
+                autoCenter: Phaser.Scale.CENTER_BOTH,
+                parent: 'game',
+                width: 800,
+                height: 800
+            },
+            scene: playGame
+        }
+
+        game = new Phaser.Game(gameConfig);
+    </script>
+</body>
+
+</html>
