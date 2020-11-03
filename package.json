@@ -1,23 +1,23 @@
 {
-  "name": "Phaser",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/hewq/Phaser.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/hewq/Phaser/issues"
-  },
-  "homepage": "https://github.com/hewq/Phaser#readme",
-  "dependencies": {
-    "express": "^4.17.1"
-  }
+    "name": "phaser",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "dev": "node app.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/hewq/Phaser.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/hewq/Phaser/issues"
+    },
+    "homepage": "https://github.com/hewq/Phaser#readme",
+    "dependencies": {
+        "express": "^4.17.1"
+    }
 }
