@@ -1,8 +1,13 @@
 # Phaser 3 Examples
 
-部分功能示例放在`demo`文件夹中，完整小游戏示例放在`apps`文件夹中。
+部分功能示例放在 `demo` 文件夹中，完整小游戏示例放在 `apps` 文件夹中。
 
 你也可以克隆本仓进行本地开发。
+
+| 示例 | 地址 |
+| --- | ---- |
+| demo | localhost:8088/demo/xxx/index.html, xxx 表示 demo 中相应的路径 |
+| apps | localhost:8088/xxx/index.html, xxx 表示 apps 中相应的路径 |
 
 ## 本地开发
 
@@ -13,7 +18,7 @@
 | 命令 | 描述 |
 | --- | ---- |
 | `npm install` | 安装依赖 |
-| `npm run dev` | 运行脚本，在浏览器上通过 `localhost:8088/xxx/index.html` 浏览页面。`xxx` 对应 `apps` 目录下的文件夹名称，如 `a20190919firstgame` |
+| `npm run dev` | 运行脚本 |
 
 ## 游戏相关信息
 
