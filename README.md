@@ -24,12 +24,14 @@
 
 ### MATCH
 
+- tutorial: <https://github.com/hewq/blog/blob/master/Phaser/dragandmatch.md>
 - source: <https://github.com/hewq/Phaser/tree/master/apps/a20200428match>
 - reference: <http://phaser.io/news/2020/04/match-3-class-updated>
 - view: <https://hewq.github.io/apps/a20200428match/index.html>
 
 ### GROWING CIRCLE
 
+- tutorial: <https://github.com/hewq/blog/blob/master/Phaser/growingCircle.md>
 - source: <https://github.com/hewq/Phaser/tree/master/apps/a20200427growingcircle>
 - reference: <http://phaser.io/news/2020/04/hundreds-flash-game-prototype>
 - view: <https://hewq.github.io/apps/a20200427growingcircle/index.html>
