@@ -1,5 +1,5 @@
 <p align="center">
-  <img width=60% src="github/phaser3-typescript.png">
+  <img width=40% src="github/phaser3-typescript.png">
 </p>
 
 # Phaser 3 Examples
