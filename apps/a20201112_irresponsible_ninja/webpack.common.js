@@ -31,6 +31,13 @@ module.exports = {
                     exposes: ['Phaser']
                 }
             },
+            {
+                test: /\.(png|jpe?g|gif|svg)$/i,
+                loader: 'url-loader',
+                options: {
+                    limit: 8 * 1024
+                }
+            }
         ],
     },
     plugins: [new HtmlWebpackPlugin({
