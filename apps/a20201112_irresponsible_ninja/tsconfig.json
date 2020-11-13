@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "outDir": "./dist/",
+        "sourceMap": true,
+        "noImplicitAny": true,
+        "module": "commonjs",
+        "target": "ES6",
+        "allowJs": true,
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["./*"],
+            "@src/*": ["./src/*"],
+            "@images/*": ["./src/images/*"],
+            "@scenes/*": ["./src/scenes/*"]
+        }
+    }
+}
