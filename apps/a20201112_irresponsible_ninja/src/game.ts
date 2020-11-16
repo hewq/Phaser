@@ -2,6 +2,7 @@ import 'phaser';
 import StartScene from '@scenes/start';
 import MainScene from '@scenes/main';
 import FootScene from '@scenes/foot';
+import BackgroundScene from '@scenes/background';
 
 declare global {
     interface Window { game: Game; }
@@ -17,7 +18,7 @@ const config: Phaser.Types.Core.GameConfig = {
         width: 750,
         height: 1624
     },
-    scene: [MainScene, FootScene, StartScene]
+    scene: [BackgroundScene, FootScene, MainScene, StartScene]
 };
 
 class Game extends Phaser.Game {
