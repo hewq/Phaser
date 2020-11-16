@@ -57,7 +57,7 @@ export class FootScene extends Phaser.Scene {
             duration: 3000,
             yoyo: true,
             repeat: -1,
-            ease: Phaser.Math.Easing.Circular
+            ease: Phaser.Math.Easing.Sine.InOut
         });
 
         this.add.tween({
@@ -73,7 +73,7 @@ export class FootScene extends Phaser.Scene {
             duration: 3000,
             yoyo: true,
             repeat: -1,
-            ease: Phaser.Math.Easing.Circular
+            ease: Phaser.Math.Easing.Sine.InOut
         });
     }
 }
