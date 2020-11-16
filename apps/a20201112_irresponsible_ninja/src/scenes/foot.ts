@@ -17,9 +17,9 @@ export default class extends Phaser.Scene {
             circleNum: 7,
             blueCircleFrame: 0,
             whileCircleFrame: 1,
-            blueCloudY: 150,
-            whileCloudY: 170,
-            height: 120
+            blueCloudY: 160,
+            whileCloudY: 190,
+            height: 90
         };
 
         this.cameras.main.setViewport(0, window.game.height - footConfig.height, window.game.width, footConfig.height);
@@ -77,5 +77,10 @@ export default class extends Phaser.Scene {
             repeat: -1,
             ease: Phaser.Math.Easing.Sine.InOut
         });
+    }
+
+    resize(width: number, height: number): void {
+        console.log(width);
+        console.log(height);
     }
 }
