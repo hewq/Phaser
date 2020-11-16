@@ -14,7 +14,7 @@ export class FootScene extends Phaser.Scene {
 
     create(): void {
         
-        const footConfig = {
+        const footConfig: footConfig = {
             circleNum: 7,
             blueCircleFrame: 0,
             whileCircleFrame: 1,
