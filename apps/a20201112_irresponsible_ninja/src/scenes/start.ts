@@ -1,6 +1,6 @@
-import imgBtnStart from '@images/btn_start.png';
+import pngBtnStart from '@images/btn_start.png';
 
-export class StartScene extends Phaser.Scene {
+export default class extends Phaser.Scene {
     constructor() {
         super({
             key: 'StartScene',
@@ -9,11 +9,13 @@ export class StartScene extends Phaser.Scene {
     }
 
     preload(): void {
-        this.load.image('imgBtnStart', imgBtnStart);
+        this.load.image('imgBtnStart', pngBtnStart);
     }
 
     create(): void {
-        const btnStart = this.add.sprite(Number(this.game.config.width) / 2, Number(this.game.config.height) / 2, 'imgBtnStart').setInteractive();
+        this.add.rectangle(window.game.width / 2, window.game.height / 2, window.game.width, window.game.height, 0x000000, 0.5);
+
+        const btnStart = this.add.sprite(window.game.width / 2, window.game.height / 2, 'imgBtnStart').setInteractive();
         
         btnStart.on('pointerdown', () => {
             this.scene.start('MainScene');

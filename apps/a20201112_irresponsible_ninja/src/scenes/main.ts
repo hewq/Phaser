@@ -1,17 +1,18 @@
-import bg from '@images/bg.png';
+import pngBg from '@images/bg.png';
 
-export class MainScene extends Phaser.Scene {
+export default class extends Phaser.Scene {
     constructor() {
         super({
-            key: 'MainScene'
+            key: 'MainScene',
+            active: true
         });
     }
 
     preload(): void {
-        this.load.image('bg', bg);
+        this.load.image('imgBg', pngBg);
     }
 
     create(): void {
-        this.add.sprite(Number(this.game.config.width) / 2, Number(this.game.config.height) / 2, 'bg');
+        this.add.sprite(window.game.width / 2, window.game.height / 2, 'imgBg');
     }
 }

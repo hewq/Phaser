@@ -1,6 +1,6 @@
-import cloud_png from '@images/cloud.png';
+import pngCloud from '@images/cloud.png';
 
-export class FootScene extends Phaser.Scene {
+export default class extends Phaser.Scene {
     constructor() {
         super({
             key: 'FootScene',
@@ -9,7 +9,7 @@ export class FootScene extends Phaser.Scene {
     }
 
     preload(): void {
-        this.load.spritesheet('cloud', cloud_png, { frameWidth: 256, frameHeight: 256});
+        this.load.spritesheet('ssCloud', pngCloud, { frameWidth: 256, frameHeight: 256});
     }
 
     create(): void {
@@ -18,12 +18,12 @@ export class FootScene extends Phaser.Scene {
             circleNum: 7,
             blueCircleFrame: 0,
             whileCircleFrame: 1,
-            blueCloudY: Number(this.game.config.height) + 60,
-            whileCloudY: Number(this.game.config.height) + 100
+            blueCloudY: window.game.height + 70,
+            whileCloudY: window.game.height + 100
         };
 
         const blueGroup = this.add.group([], {
-            key: 'cloud',
+            key: 'ssCloud',
             frame: [footConfig.blueCircleFrame],
             frameQuantity: footConfig.circleNum,
             setXY: {
@@ -34,7 +34,7 @@ export class FootScene extends Phaser.Scene {
         });
 
         const whileGroup = this.add.group([], {
-            key: 'cloud',
+            key: 'ssCloud',
             frame: [footConfig.whileCircleFrame],
             frameQuantity: footConfig.circleNum,
             setXY: {

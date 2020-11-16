@@ -1,4 +1,5 @@
 declare module "*.png";
+
 declare type footConfig = {
     circleNum: number,
     blueCircleFrame: number,
