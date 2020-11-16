@@ -13,14 +13,16 @@ export default class extends Phaser.Scene {
     }
 
     create(): void {
-        
         const footConfig: footConfig = {
             circleNum: 7,
             blueCircleFrame: 0,
             whileCircleFrame: 1,
-            blueCloudY: window.game.height + 70,
-            whileCloudY: window.game.height + 100
+            blueCloudY: 150,
+            whileCloudY: 170,
+            height: 120
         };
+
+        this.cameras.main.setViewport(0, window.game.height - footConfig.height, window.game.width, footConfig.height);
 
         const blueGroup = this.add.group([], {
             key: 'ssCloud',

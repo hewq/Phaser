@@ -5,5 +5,6 @@ declare type footConfig = {
     blueCircleFrame: number,
     whileCircleFrame: number,
     blueCloudY: number
-    whileCloudY: number
+    whileCloudY: number,
+    height: number
 };

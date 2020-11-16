@@ -5,4 +5,12 @@ export default class extends Phaser.Scene {
             active: true
         });
     }
+
+    preload(): void {
+        // this.load.sceneFile('FootScene', footScene);
+    }
+
+    // create(): void {
+        
+    // }
 }
