@@ -1,6 +1,5 @@
 import pngCloud from '@images/cloud.png';
 
-
 const footConfig: footConfig = {
     circleNum: 7,
     blueCircleFrame: 0,
@@ -13,8 +12,7 @@ const footConfig: footConfig = {
 export default class extends Phaser.Scene {
     constructor() {
         super({
-            key: 'FootScene',
-            active: true
+            key: 'FootScene'
         });
     }
 

@@ -1,5 +1,12 @@
 const path = require('path');
+// const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+// const definePlugin = new webpack.DefinePlugin({
+//     __DEV__: JSON.stringify(JSON.parse(process.env.BUILD_DEV || 'true')),
+//     WEBGL_RENDERER: true,
+//     CANVAS_RENDERER: true
+// });
 
 module.exports = {
     entry: {
@@ -36,12 +43,14 @@ module.exports = {
                 test: /\.(png|jpe?g|gif|svg)$/i,
                 loader: 'url-loader',
                 options: {
-                    limit: 1
+                    limit: 1,
+                    name: '[name].[hash:7].[ext]'
                 }
             }
         ],
     },
     plugins: [new HtmlWebpackPlugin({
+        // definePlugin,
         template: path.resolve(__dirname, 'index.html')
     })]
 };

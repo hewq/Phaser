@@ -1,16 +1,17 @@
+import pngTips from '@images/tips.png';
+
 export default class extends Phaser.Scene {
     constructor() {
         super({
-            key: 'MainScene',
-            active: true
+            key: 'MainScene'
         });
     }
 
     preload(): void {
-        // this.load.sceneFile('FootScene', footScene);
+        this.load.image('imgTips', pngTips);
     }
 
-    // create(): void {
-        
-    // }
+    create(): void {
+        this.add.image(window.game.width / 2, 100, 'imgTips');
+    }
 }

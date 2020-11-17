@@ -4,8 +4,7 @@ import pngTitle from '@images/title.png';
 export default class extends Phaser.Scene {
     constructor() {
         super({
-            key: 'StartScene',
-            active: true
+            key: 'StartScene'
         });
     }
 
@@ -22,7 +21,7 @@ export default class extends Phaser.Scene {
         const btnStart = this.add.sprite(window.game.width / 2, window.game.height / 2, 'imgBtnStart').setInteractive();
         
         btnStart.on('pointerdown', () => {
-            this.scene.start('MainScene');
+            this.scene.sleep('StartScene');
         });
 
         this.add.tween({
