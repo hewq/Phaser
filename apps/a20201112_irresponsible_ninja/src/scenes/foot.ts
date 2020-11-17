@@ -1,5 +1,15 @@
 import pngCloud from '@images/cloud.png';
 
+
+const footConfig: footConfig = {
+    circleNum: 7,
+    blueCircleFrame: 0,
+    whileCircleFrame: 1,
+    blueCloudY: 160,
+    whileCloudY: 190,
+    height: 90
+};
+
 export default class extends Phaser.Scene {
     constructor() {
         super({
@@ -13,14 +23,6 @@ export default class extends Phaser.Scene {
     }
 
     create(): void {
-        const footConfig: footConfig = {
-            circleNum: 7,
-            blueCircleFrame: 0,
-            whileCircleFrame: 1,
-            blueCloudY: 160,
-            whileCloudY: 190,
-            height: 90
-        };
 
         this.cameras.main.setViewport(0, window.game.height - footConfig.height, window.game.width, footConfig.height);
 
@@ -77,10 +79,17 @@ export default class extends Phaser.Scene {
             repeat: -1,
             ease: Phaser.Math.Easing.Sine.InOut
         });
+
+        this.resize();
+
+        window.addEventListener('resize', () => {
+            this.resize();
+        });
     }
 
-    resize(width: number, height: number): void {
-        console.log(width);
-        console.log(height);
+    resize(): void {
+        const viewHeight = document.documentElement.clientHeight / window.rem;
+        const camerasY = (window.game.height - viewHeight) / 2 + viewHeight - footConfig.height;
+        this.cameras.main.setPosition(0, camerasY);
     }
 }

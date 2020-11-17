@@ -1,3 +1,5 @@
+import '@scripts/rem';
+
 import 'phaser';
 import StartScene from '@scenes/start';
 import MainScene from '@scenes/main';

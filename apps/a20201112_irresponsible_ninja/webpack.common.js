@@ -15,7 +15,8 @@ module.exports = {
             '@': path.resolve(__dirname, './'),
             '@src': path.resolve(__dirname, 'src'),
             '@images': path.resolve(__dirname, 'src/images'),
-            '@scenes': path.resolve(__dirname, 'src/scenes')
+            '@scenes': path.resolve(__dirname, 'src/scenes'),
+            '@scripts': path.resolve(__dirname, 'src/scripts')
         }
     },
     module: {

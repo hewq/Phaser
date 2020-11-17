@@ -12,7 +12,8 @@
             "@/*": ["/*"],
             "@src/*": ["src/*"],
             "@images/*": ["src/images/*"],
-            "@scenes/*": ["src/scenes/*"]
+            "@scenes/*": ["src/scenes/*"],
+            "@scripts/*": ["src/scripts/*"]
         }
     }
 }
