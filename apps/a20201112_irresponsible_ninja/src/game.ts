@@ -1,6 +1,6 @@
 import '@scripts/rem';
 
-import 'phaser';
+import '@scripts/phaser-custom.min.js';
 import StartScene from '@scenes/start';
 import MainScene from '@scenes/main';
 import FootScene from '@scenes/foot';

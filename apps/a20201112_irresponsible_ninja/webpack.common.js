@@ -10,7 +10,11 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     entry: {
-        app: path.resolve(__dirname, './src/game.ts')
+        app: {
+            import: './src/game.ts',
+            dependOn: 'shared'
+        },
+        'shared': './src/scripts/phaser-custom.min.js'
     },
     output: {
         path: path.resolve(__dirname, 'dist'),
@@ -31,13 +35,6 @@ module.exports = {
                 test: /\.tsx?$/,
                 loader: 'ts-loader',
                 exclude: /node_modules/,
-            },
-            {
-                test: require.resolve('phaser'),
-                loader: 'expose-loader',
-                options: {
-                    exposes: ['Phaser']
-                }
             },
             {
                 test: /\.(png|jpe?g|gif|svg)$/i,
