@@ -45,4 +45,10 @@
 - source: <https://github.com/hewq/Phaser/tree/master/apps/a20201103runaround>
 - reference: <https://www.emanueleferonato.com/2020/08/13/html5-prototype-of-run-around-game-builth-with-phaser-with-no-physics-engines/>
 - view: <https://hewq.github.io/apps/a20201103runaround/index.html>
+
+### IRRESPONSIBLE NINJA
+
+- source: <https://github.com/hewq/Phaser/tree/master/apps/a20201112_irresponsible_ninja>
+- reference: <https://triqui.itch.io/irresponsible-ninja>
+- view: <https://hewq.github.io/apps/a20201112_irresponsible_ninja/index.html>
   
