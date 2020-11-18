@@ -20,7 +20,7 @@ const config: Phaser.Types.Core.GameConfig = {
         width: 750,
         height: 1624
     },
-    scene: [BackgroundScene, FootScene, MainScene, StartScene]
+    scene: [BackgroundScene, MainScene, FootScene, StartScene]
 };
 
 class Game extends Phaser.Game {

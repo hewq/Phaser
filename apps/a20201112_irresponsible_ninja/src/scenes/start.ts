@@ -21,7 +21,7 @@ export default class extends Phaser.Scene {
         const btnStart = this.add.sprite(window.game.width / 2, window.game.height / 2, 'imgBtnStart').setInteractive();
         
         btnStart.on('pointerdown', () => {
-            this.scene.sleep('StartScene');
+            this.scene.start('MainScene');
         });
 
         this.add.tween({

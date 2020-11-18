@@ -14,6 +14,5 @@ export default class extends Phaser.Scene {
 
         this.scene.launch('FootScene');
         this.scene.launch('StartScene');
-        this.scene.launch('MainScene');
     }
 }

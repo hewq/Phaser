@@ -1,6 +1,6 @@
 import pngCloud from '@images/cloud.png';
 
-const footConfig: footConfig = {
+const config: FootConfig = {
     circleNum: 7,
     blueCircleFrame: 0,
     whileCircleFrame: 1,
@@ -22,14 +22,12 @@ export default class extends Phaser.Scene {
 
     create(): void {
 
-        this.cameras.main.setViewport(0, window.game.height - footConfig.height, window.game.width, footConfig.height);
-
         const blueGroup = this.add.group([], {
             key: 'ssCloud',
-            frame: [footConfig.blueCircleFrame],
-            frameQuantity: footConfig.circleNum,
+            frame: [config.blueCircleFrame],
+            frameQuantity: config.circleNum,
             setXY: {
-                y: footConfig.blueCloudY,
+                y: config.blueCloudY,
                 stepX: 120,
                 stepY: 0
             }
@@ -37,10 +35,10 @@ export default class extends Phaser.Scene {
 
         const whileGroup = this.add.group([], {
             key: 'ssCloud',
-            frame: [footConfig.whileCircleFrame],
-            frameQuantity: footConfig.circleNum,
+            frame: [config.whileCircleFrame],
+            frameQuantity: config.circleNum,
             setXY: {
-                y: footConfig.whileCloudY,
+                y: config.whileCloudY,
                 stepX: 120,
                 stepY: 0
             }
@@ -87,7 +85,7 @@ export default class extends Phaser.Scene {
 
     resize(): void {
         const viewHeight = document.documentElement.clientHeight / window.rem;
-        const camerasY = (window.game.height - viewHeight) / 2 + viewHeight - footConfig.height;
+        const camerasY = (window.game.height - viewHeight) / 2 + viewHeight - config.height;
         this.cameras.main.setPosition(0, camerasY);
     }
 }
