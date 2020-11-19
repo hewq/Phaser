@@ -3,38 +3,39 @@ import pngProcess from '@images/process_border.png';
 import pngSprites from '@images/sprites.png';
 import pngNinja from '@images/ninja.png';
 
-let txtDistance: Phaser.GameObjects.Text;
-let rect: Phaser.GameObjects.Rectangle;
-let stick: Phaser.GameObjects.Rectangle;
+let txtDistance: Phaser.GameObjects.Text; // 文本，显示距离
+let rect: Phaser.GameObjects.Rectangle; // 进度条
+let stick: Phaser.GameObjects.Rectangle; // 棍子
 
-let processTimerEvent: Phaser.Time.TimerEvent;
+let processTimerEvent: Phaser.Time.TimerEvent; // 计时事件
 
-let overContainer: Phaser.GameObjects.Container;
-let gameContainer: Phaser.GameObjects.Container;
+let overContainer: Phaser.GameObjects.Container; // 游戏结束内容容器
+let gameContainer: Phaser.GameObjects.Container; // 游戏内容容器
 
-let prePlatformDistance: number;
-let nextPlatformDistance: number;
-let curPlatformWidth: number;
-let prePlatformWidth: number;
-let nextPlatformWidth: number;
+let prePlatformDistance: number; // 到上一个站台的距离
+let nextPlatformDistance: number; // 到下一个站台的距离
+let curPlatformWidth: number; // 当前站台宽度
+let prePlatformWidth: number; // 上一个站台宽度
+let nextPlatformWidth: number; // 下一个站台宽度
 
-let curPlatformX: number;
-let nextPlatformX: number;
+let curPlatformX: number; // 当前站台位置
+let nextPlatformX: number; // 下一个站台位置
 
-let ninja: Phaser.GameObjects.Sprite;
+let ninja: Phaser.GameObjects.Sprite; // 不靠谱的忍者本者
 
-let distance = 0;
-let isPlaying = false;
-let isStart = false;
+let distance = 0; // 距离，站台数
+let isPlaying = false; // 是否处于处理流程中，区间在从按下到释放后的动画播放结束
+let isStart = false; // 是否开始游戏
 
 const config: GameConfig = {
-    processLen: 500,
-    processHeight: 29,
-    platformHeight: 600,
-    stickWidth: 10,
-    stickHeight: -10
+    processLen: 500, // 进度条长度
+    processHeight: 29, // 进度条高度
+    platformHeight: 600, // 站台高度
+    stickWidth: 10, // 棍子宽度
+    stickHeight: -10 // 棍子长度，坐标系原因，取负值
 };
 
+// 变化的值单独拧出来
 let stickHeight = config.stickHeight;
 let processLen = config.processLen;
 
