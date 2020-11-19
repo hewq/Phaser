@@ -48,6 +48,7 @@
 
 ### IRRESPONSIBLE NINJA
 
+- tutorial: <https://github.com/hewq/blog/blob/master/Phaser/irresponsible_ninja.md>
 - source: <https://github.com/hewq/Phaser/tree/master/apps/a20201112_irresponsible_ninja>
 - reference: <https://triqui.itch.io/irresponsible-ninja>
 - view: <https://hewq.github.io/apps/a20201112_irresponsible_ninja/index.html>
