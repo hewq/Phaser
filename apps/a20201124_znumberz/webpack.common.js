@@ -20,7 +20,8 @@ module.exports = {
             '@src': path.resolve(__dirname, 'src'),
             '@images': path.resolve(__dirname, 'src/images'),
             '@scenes': path.resolve(__dirname, 'src/scenes'),
-            '@scripts': path.resolve(__dirname, 'src/scripts')
+            '@scripts': path.resolve(__dirname, 'src/scripts'),
+            '@data': path.resolve(__dirname, 'src/data')
         }
     },
     module: {

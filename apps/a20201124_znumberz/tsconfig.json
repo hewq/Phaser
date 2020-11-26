@@ -13,7 +13,15 @@
             "@src/*": ["src/*"],
             "@images/*": ["src/images/*"],
             "@scenes/*": ["src/scenes/*"],
-            "@scripts/*": ["src/scripts/*"]
+            "@scripts/*": ["src/scripts/*"],
+            "@data/*": ["src/data/*"]
         }
-    }
+    },
+    "include": [
+      "src/*.ts",
+      "src/**/*.ts"
+    ],
+    "exclude": [
+      "node_modules"
+    ]
 }

@@ -8,7 +8,7 @@ declare global {
 
 const config: Phaser.Types.Core.GameConfig = {
     type: Phaser.AUTO,
-    backgroundColor: '#000000',
+    backgroundColor: '#202020',
     scale: {
         mode: Phaser.Scale.WIDTH_CONTROLS_HEIGHT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
@@ -16,7 +16,7 @@ const config: Phaser.Types.Core.GameConfig = {
         width: 750,
         height: 1624
     },
-    scene: [MainScene, StartScene]
+    scene: [StartScene, MainScene]
 };
 
 class Game extends Phaser.Game {
