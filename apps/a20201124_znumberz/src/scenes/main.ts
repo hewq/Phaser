@@ -2,10 +2,16 @@ import { levelList } from '@data/gameData';
 
 let container: Phaser.GameObjects.Container;
 let tileContainer: Phaser.GameObjects.Container;
-let tileTween: Phaser.Tweens.Tween;
+let curTile: Phaser.GameObjects.Container;
+let tmEvt: Phaser.Time.TimerEvent;
 
-let selecting = false;
+let activeTileList: Phaser.GameObjects.Container[] = [];
+
+let hasTw = false;
 let clearTw = false;
+
+const RECT = 0;
+const NUMBER = 1;
 
 const gameOptions = {
     tileSize: 100,
@@ -14,7 +20,7 @@ const gameOptions = {
         cols: 6
     },
     margin: 10,
-    colors: [0x333333, 0xea225e, 0xef6c00, 0x1674bc, 0x388e3c],
+    colors: [0x333333, 0xea225e, 0xef6c00, 0x1674bc, 0x388e3c, 0xffffff],
     directions: [
         new Phaser.Math.Vector2(0, -1),
         new Phaser.Math.Vector2(1, -1),
@@ -62,8 +68,7 @@ export default class extends Phaser.Scene {
 
         container.add([btnMenu, btnPrev, btnNext, btnRefresh]);
 
-        btnMenu.on('pointerdown', (pointer, localX, localY, event) => {
-            event.stopPropagation();
+        btnMenu.on('pointerdown', () => {
             this.scene.transition({
                 target: 'StartScene',
                 duration: 300,
@@ -89,6 +94,10 @@ export default class extends Phaser.Scene {
         container.x = window.game.width / 2 + window.game.width * progress;
     }
 
+    getNumberFrameIndex (num: number): number {
+        return num - 1 > 0 ? num - 1 : 5;
+    }
+
     initTile (): void {
         let rect: Phaser.GameObjects.Rectangle;
         let number: Phaser.GameObjects.GameObject;
@@ -100,7 +109,7 @@ export default class extends Phaser.Scene {
             row.forEach((num, colIndex) => {
                 itemContainer = this.add.container().setSize(gameOptions.tileSize, gameOptions.tileSize).setInteractive();
                 rect = this.add.rectangle(0, 0, gameOptions.tileSize, gameOptions.tileSize, gameOptions.colors[num]);
-                number = this.add.sprite(0, 0, 'numbers', num - 1 > 0 ? num - 1 : 5);
+                number = this.add.sprite(0, 0, 'numbers', this.getNumberFrameIndex(num));
 
                 itemContainer.add(rect);
                 itemContainer.add(number);
@@ -114,12 +123,7 @@ export default class extends Phaser.Scene {
 
                 const _this = this;
                 itemContainer.on('pointerdown', function () {
-                    if (!selecting) {
-                        _this.addTween([this]);
-                    } else {
-                        clearTw = true;
-                    }
-                    selecting = !selecting;
+                    _this.clickHandler(this);
                 });
 
                 itemContainer.setPosition(-270 + (gameOptions.tileSize + gameOptions.margin) * colIndex, -200 + (gameOptions.tileSize + gameOptions.margin) * rowIndex);
@@ -131,13 +135,94 @@ export default class extends Phaser.Scene {
         container.add(tileContainer);
     }
 
+    clickHandler (tile: Phaser.GameObjects.Container): void {
+        
+        if (hasTw) {
+            clearTw = true;
+            hasTw = false;
+        }
+
+        if (tile.getData('value') <= 0) {
+            if (tile.getData('active')) {
+                this.setTile(tile);
+            }
+
+            this.resetTile(activeTileList);
+            curTile = null;
+        } else {
+            this.resetTile(activeTileList);
+
+            hasTw = true;
+            curTile = tile;
+            this.getActiveTileList();
+            tmEvt = this.time.addEvent({
+                callback: () => {
+                    this.addTween([tile, ...activeTileList]);
+                },
+                delay: 100
+            });
+        }
+        
+    }
+
+    resetTile (tiles: Phaser.GameObjects.Container[]): void {
+        let rect: Phaser.GameObjects.Rectangle;
+
+        tiles.forEach((tile) => {
+            tile.setData('active', false);
+            rect = tile.getAt(RECT) as Phaser.GameObjects.Rectangle;
+            rect.setFillStyle(gameOptions.colors[0]);
+        });
+    }
+
+    setTile (tile: Phaser.GameObjects.Container): void {
+        const targetNum = tile.getAt(NUMBER) as Phaser.GameObjects.Sprite;
+        const curNum = curTile.getAt(NUMBER) as Phaser.GameObjects.Sprite;
+        const curRect = curTile.getAt(RECT) as Phaser.GameObjects.Rectangle;
+        const curValue = curTile.getData('value');
+
+        tile.setData('value', -1);
+        curTile.setData('value', 0);
+
+        targetNum.setFrame(this.getNumberFrameIndex(curValue));
+        curNum.setFrame(this.getNumberFrameIndex(0));
+        curRect.setFillStyle(gameOptions.colors[0]);
+    }
+
+    getActiveTileList (): void {
+        let activeRow: number;
+        let activeCol: number;
+        let activeTile: Phaser.GameObjects.Container;
+        let rect: Phaser.GameObjects.Rectangle;
+
+        const [value, row, col] = curTile.getData(['value', 'row', 'col']);
+
+        activeTileList = [];
+
+        gameOptions.directions.forEach((direction) => {
+            activeRow = row + value * direction.y;
+            activeCol = col + value * direction.x;
+            if (activeRow >= 0 && activeRow < gameOptions.filedSize.rows && activeCol >= 0 && activeCol < gameOptions.filedSize.cols) {
+                activeTile = tileContainer.getAt(gameOptions.filedSize.cols * activeRow + activeCol) as Phaser.GameObjects.Container;
+                if (activeTile.getData('value') === 0) {
+                    activeTile.setData('active', true);
+                    rect = activeTile.getAt(RECT) as Phaser.GameObjects.Rectangle;
+                    rect.setFillStyle(gameOptions.colors[gameOptions.colors.length - 1]);
+                    activeTileList.push(tileContainer.getAt(gameOptions.filedSize.cols * activeRow + activeCol) as Phaser.GameObjects.Container);
+                }
+            }
+        });
+    }
+
     addTween (targets: Phaser.GameObjects.GameObject[]): void {
-        tileTween = this.add.tween({
+        tmEvt && tmEvt.destroy();
+
+        this.add.tween({
             targets: targets,
             props: {
                 scale: 0.9
             },
-            duration: 150,
+            duration: 100,
             yoyo: true,
             repeat: -1,
             onRepeat: (tw) => {
