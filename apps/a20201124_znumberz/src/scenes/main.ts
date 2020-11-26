@@ -3,6 +3,7 @@ import { levelList } from '@data/gameData';
 let container: Phaser.GameObjects.Container;
 let curTile: Phaser.GameObjects.Container;
 let tmEvt: Phaser.Time.TimerEvent;
+let levelTxt: Phaser.GameObjects.Text;
 
 const containerList: Phaser.GameObjects.Container[] = [];
 let activeTileList: Phaser.GameObjects.Container[] = [];
@@ -10,7 +11,7 @@ let activeTileList: Phaser.GameObjects.Container[] = [];
 let hasTw = false;
 let clearTw = false;
 
-let curLevel = 10;
+let curLevel = 1;
 const totalLevel = 10;
 
 const RECT = 0;
@@ -82,7 +83,15 @@ export default class extends Phaser.Scene {
             });
         });
 
-        const levelTxt = this.add.text(320, -270, `${curLevel}/10`, {
+        btnPrev.on('pointerdown', () => {
+            this.switchLevel(-1);
+        });
+
+        btnNext.on('pointerdown', () => {
+            this.switchLevel(1);
+        });
+
+        levelTxt = this.add.text(320, -270, `${curLevel}/10`, {
             fontSize: 74,
             fontFamily: 'Arail',
             color: '#ffffff'
@@ -91,6 +100,28 @@ export default class extends Phaser.Scene {
         container.add(levelTxt);
 
         this.createAntherLevel();
+    }
+
+    switchLevel (direction: number): void {
+        const leverSwitchTo = curLevel + direction;
+        if (leverSwitchTo > 0 && leverSwitchTo <= totalLevel) {
+            this.add.tween({
+                targets: containerList[curLevel - 1],
+                props: {
+                    x: window.game.width
+                },
+                duration: 300
+            });
+            this.add.tween({
+                targets: containerList[leverSwitchTo - 1],
+                props: {
+                    x: 0
+                },
+                duration: 300
+            });
+            curLevel = leverSwitchTo;
+            levelTxt.setText(`${curLevel}/${totalLevel}`);
+        }
     }
 
     createAntherLevel (): void {
