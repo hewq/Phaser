@@ -1,7 +1,10 @@
 import { levelList } from '@data/gameData';
 
 let container: Phaser.GameObjects.Container;
+let tileContainer: Phaser.GameObjects.Container;
 let tileTween: Phaser.Tweens.Tween;
+
+let selecting = false;
 
 const gameOptions = {
     tileSize: 100,
@@ -9,7 +12,7 @@ const gameOptions = {
         rows: 6,
         cols: 6
     },
-    margin: 5,
+    margin: 10,
     colors: [0x333333, 0xea225e, 0xef6c00, 0x1674bc, 0x388e3c],
     directions: [
         new Phaser.Math.Vector2(0, -1),
@@ -86,41 +89,56 @@ export default class extends Phaser.Scene {
     }
 
     initTile (): void {
-        const tileContainer = this.add.container().setSize(gameOptions.tileSize, gameOptions.tileSize);
         let rect: Phaser.GameObjects.Rectangle;
         let number: Phaser.GameObjects.GameObject;
+        let itemContainer: Phaser.GameObjects.Container;
 
-        levelList[0].forEach((row) => {
-            row.forEach((num) => {
+        tileContainer = this.add.container();
+
+        levelList[0].forEach((row, rowIndex) => {
+            row.forEach((num, colIndex) => {
+                itemContainer = this.add.container().setSize(gameOptions.tileSize, gameOptions.tileSize).setInteractive();
                 rect = this.add.rectangle(0, 0, gameOptions.tileSize, gameOptions.tileSize, gameOptions.colors[num]);
-                rect.setInteractive();
-                rect.setDataEnabled();
-                rect.setData({
-                    value: num
+                number = this.add.sprite(0, 0, 'numbers', num - 1 > 0 ? num - 1 : 5);
+
+                itemContainer.add(rect);
+                itemContainer.add(number);
+
+                itemContainer.setDataEnabled();
+                itemContainer.setData({
+                    value: num,
+                    row: rowIndex,
+                    col: colIndex
                 });
 
                 const _this = this;
-                rect.on('pointerdown', function () {
-                    console.log(this);
-                    _this.addTween([this]);
+                itemContainer.on('pointerdown', function () {
+                    console.log(this.getData('value'));
+                    if (!selecting) {
+                        _this.addTween([this]);
+                    } else {
+                        console.log(tileTween);
+                        // tileTween.destroy();
+                    }
+                    selecting = !selecting;
                 });
 
-                number = this.add.sprite(0, 0, 'numbers', num - 1 > 0 ? num - 1 : 5);
+                itemContainer.setPosition(-270 + (gameOptions.tileSize + gameOptions.margin) * colIndex, -200 + (gameOptions.tileSize + gameOptions.margin) * rowIndex);
 
-                tileContainer.add(rect);
-                tileContainer.add(number);
-
+                tileContainer.add(itemContainer);
             });
         });
+
+        container.add(tileContainer);
     }
 
     addTween (targets: Phaser.GameObjects.GameObject[]): void {
         tileTween = this.add.tween({
             targets: targets,
             props: {
-                scale: 0.8
+                scale: 0.9
             },
-            duration: 300,
+            duration: 150,
             yoyo: true,
             loop: -1,
             ease: Phaser.Math.Easing.Sine.InOut
