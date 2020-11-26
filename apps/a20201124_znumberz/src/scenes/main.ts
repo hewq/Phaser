@@ -5,6 +5,7 @@ let tileContainer: Phaser.GameObjects.Container;
 let tileTween: Phaser.Tweens.Tween;
 
 let selecting = false;
+let clearTw = false;
 
 const gameOptions = {
     tileSize: 100,
@@ -113,12 +114,10 @@ export default class extends Phaser.Scene {
 
                 const _this = this;
                 itemContainer.on('pointerdown', function () {
-                    console.log(this.getData('value'));
                     if (!selecting) {
                         _this.addTween([this]);
                     } else {
-                        console.log(tileTween);
-                        // tileTween.destroy();
+                        clearTw = true;
                     }
                     selecting = !selecting;
                 });
@@ -140,7 +139,13 @@ export default class extends Phaser.Scene {
             },
             duration: 150,
             yoyo: true,
-            loop: -1,
+            repeat: -1,
+            onRepeat: (tw) => {
+                if (clearTw) {
+                    tw.stop();
+                    clearTw = false;
+                }
+            },
             ease: Phaser.Math.Easing.Sine.InOut
         });
     }
