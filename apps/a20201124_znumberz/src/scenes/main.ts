@@ -1,14 +1,17 @@
 import { levelList } from '@data/gameData';
 
 let container: Phaser.GameObjects.Container;
-let tileContainer: Phaser.GameObjects.Container;
 let curTile: Phaser.GameObjects.Container;
 let tmEvt: Phaser.Time.TimerEvent;
 
+const containerList: Phaser.GameObjects.Container[] = [];
 let activeTileList: Phaser.GameObjects.Container[] = [];
 
 let hasTw = false;
 let clearTw = false;
+
+let curLevel = 10;
+const totalLevel = 10;
 
 const RECT = 0;
 const NUMBER = 1;
@@ -79,7 +82,7 @@ export default class extends Phaser.Scene {
             });
         });
 
-        const levelTxt = this.add.text(320, -270, '1/10', {
+        const levelTxt = this.add.text(320, -270, `${curLevel}/10`, {
             fontSize: 74,
             fontFamily: 'Arail',
             color: '#ffffff'
@@ -87,7 +90,13 @@ export default class extends Phaser.Scene {
 
         container.add(levelTxt);
 
-        this.initTile();
+        this.createAntherLevel();
+    }
+
+    createAntherLevel (): void {
+        for (let i = 0; i < totalLevel; i++) {
+            this.createTileBoard(i);
+        }
     }
 
     transitionOut (progress: number): void {
@@ -95,17 +104,17 @@ export default class extends Phaser.Scene {
     }
 
     getNumberFrameIndex (num: number): number {
-        return num - 1 > 0 ? num - 1 : 5;
+        return num - 1 < 0 ? 5 : num - 1;
     }
 
-    initTile (): void {
+    createTileBoard (levelIndex: number): void {
         let rect: Phaser.GameObjects.Rectangle;
         let number: Phaser.GameObjects.GameObject;
         let itemContainer: Phaser.GameObjects.Container;
 
-        tileContainer = this.add.container();
+        const tileContainer = this.add.container();
 
-        levelList[0].forEach((row, rowIndex) => {
+        levelList[levelIndex].forEach((row, rowIndex) => {
             row.forEach((num, colIndex) => {
                 itemContainer = this.add.container().setSize(gameOptions.tileSize, gameOptions.tileSize).setInteractive();
                 rect = this.add.rectangle(0, 0, gameOptions.tileSize, gameOptions.tileSize, gameOptions.colors[num]);
@@ -132,7 +141,12 @@ export default class extends Phaser.Scene {
             });
         });
 
+        containerList.push(tileContainer);
         container.add(tileContainer);
+
+        if (levelIndex !== 0) {
+            tileContainer.setPosition(window.game.width, 0);
+        }
     }
 
     clickHandler (tile: Phaser.GameObjects.Container): void {
@@ -203,12 +217,12 @@ export default class extends Phaser.Scene {
             activeRow = row + value * direction.y;
             activeCol = col + value * direction.x;
             if (activeRow >= 0 && activeRow < gameOptions.filedSize.rows && activeCol >= 0 && activeCol < gameOptions.filedSize.cols) {
-                activeTile = tileContainer.getAt(gameOptions.filedSize.cols * activeRow + activeCol) as Phaser.GameObjects.Container;
+                activeTile = containerList[curLevel - 1].getAt(gameOptions.filedSize.cols * activeRow + activeCol) as Phaser.GameObjects.Container;
                 if (activeTile.getData('value') === 0) {
                     activeTile.setData('active', true);
                     rect = activeTile.getAt(RECT) as Phaser.GameObjects.Rectangle;
                     rect.setFillStyle(gameOptions.colors[gameOptions.colors.length - 1]);
-                    activeTileList.push(tileContainer.getAt(gameOptions.filedSize.cols * activeRow + activeCol) as Phaser.GameObjects.Container);
+                    activeTileList.push(containerList[curLevel - 1].getAt(gameOptions.filedSize.cols * activeRow + activeCol) as Phaser.GameObjects.Container);
                 }
             }
         });
