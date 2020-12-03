@@ -23,7 +23,7 @@ let btnNext: Phaser.GameObjects.Sprite;
 const storageKeyLevel = 'original_level';
 
 // 所有关卡容器列表
-const containerList: Phaser.GameObjects.Container[] = [];
+let containerList: Phaser.GameObjects.Container[] = [];
 
 // 被激活的 tile 列表
 let activeTileList: Phaser.GameObjects.Container[] = [];
@@ -44,7 +44,7 @@ let unlockLevel = 1;
 // 关卡总数
 const totalLevel = 10;
 
-// 当前关卡需要移动的 tile 个数
+// 当前关卡已移动的 tile 个数
 let curMoveTileNum = 0;
 
 // tile 容器的对应的 index
@@ -85,9 +85,12 @@ export default class extends Phaser.Scene {
         this.load.image('lock', require('@images/lock.png').default);
     }
 
-    create (): void {
+    init (): void {
+        this.restart();
         this.initUnlockLevel();
+    }
 
+    create (): void {
         container = this.add.container(window.game.width + window.game.width / 2, window.game.height / 2);
 
         // 场景过渡动画
@@ -312,8 +315,6 @@ export default class extends Phaser.Scene {
             if (tile.getData('active')) {
                 this.setTile(tile);
                 curMoveTileNum++;
-                console.log(curMoveTileNum);
-                console.log(levelNotZeroNumList[curLevelIndex]);
                 if (this.isWin()) {
                     this.winHandler();
                 }
@@ -409,5 +410,18 @@ export default class extends Phaser.Scene {
             },
             ease: Phaser.Math.Easing.Sine.InOut
         });
+    }
+
+    // 重启游戏
+    restart (): void {
+        containerList = [];
+        activeTileList = [];
+        hasTw = false;
+        clearTw = false;
+        curLevel = 1;
+        curLevelIndex = 0;
+        unlockLevel = 1;
+        curMoveTileNum = 0;
+
     }
 }
