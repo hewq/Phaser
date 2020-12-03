@@ -6,6 +6,11 @@ let tmEvt: Phaser.Time.TimerEvent;
 let levelTxt: Phaser.GameObjects.Text;
 let lock: Phaser.GameObjects.Container;
 
+let btnPrev: Phaser.GameObjects.Sprite;
+let btnNext: Phaser.GameObjects.Sprite;
+
+const storageKeyLevel = 'original_level';
+
 const containerList: Phaser.GameObjects.Container[] = [];
 let activeTileList: Phaser.GameObjects.Container[] = [];
 
@@ -13,6 +18,7 @@ let hasTw = false;
 let clearTw = false;
 
 let curLevel = 1;
+let unlockLevel = 1;
 const totalLevel = 10;
 
 const RECT = 0;
@@ -53,7 +59,9 @@ export default class extends Phaser.Scene {
     }
 
     create (): void {
-        container = this.add.container(window.game.width + window.game.width / 2, window.game.height / 2).setInteractive();
+        this.initUnlockLevel();
+
+        container = this.add.container(window.game.width + window.game.width / 2, window.game.height / 2);
 
         this.events.on('transitionstart', () => { 
             this.tweens.add({
@@ -68,9 +76,11 @@ export default class extends Phaser.Scene {
         container.add(this.add.sprite(0, -560, 'title', 0));
 
         const btnMenu = this.add.sprite(-280, -320, 'btns', 0).setInteractive();
-        const btnPrev = this.add.sprite(-180, -320, 'btns', 1).setInteractive();
-        const btnNext = this.add.sprite(-80, -320, 'btns', 2).setInteractive();
         const btnRefresh = this.add.sprite(20, -320, 'btns', 3).setInteractive();
+        btnPrev = this.add.sprite(-180, -320, 'btns', 1).setInteractive();
+        btnNext = this.add.sprite(-80, -320, 'btns', 2).setInteractive();
+
+        this.setBtnStyle();
 
         container.add([btnMenu, btnPrev, btnNext, btnRefresh]);
 
@@ -103,13 +113,23 @@ export default class extends Phaser.Scene {
 
         this.createTotalLevel();
 
-        lock = this.add.container();
+        lock = this.add.container().setVisible(false);
         const lockRect = this.add.rectangle(4, 76, 750, 650, 0x000000, 0.5);
         lock.add(lockRect);
         lock.add(this.add.image(3, 80, 'lock'));
         lockRect.setInteractive();
 
         container.add(lock);
+    }
+
+    initUnlockLevel (): void {
+        const level = localStorage.getItem(storageKeyLevel);
+        if (level) {
+            unlockLevel = Number(level);
+            curLevel = unlockLevel;
+        } else {
+            localStorage.setItem(storageKeyLevel, String(unlockLevel));
+        }
     }
 
     switchLevel (direction: number): void {
@@ -131,6 +151,30 @@ export default class extends Phaser.Scene {
             });
             curLevel = leverSwitchTo;
             levelTxt.setText(`${curLevel}/${totalLevel}`);
+        }
+
+        this.setBtnStyle();
+        this.setLock();
+    }
+
+    setLock (): void {
+        if (curLevel > unlockLevel) {
+            lock.setVisible(true);
+        } else {
+            lock.setVisible(false);
+        }
+    }
+
+    setBtnStyle (): void {
+        if (curLevel === 1) {
+            btnPrev.setAlpha(0.5);
+            btnNext.setAlpha(1);
+        } else if (curLevel === totalLevel) {
+            btnPrev.setAlpha(1);
+            btnNext.setAlpha(0.5);
+        } else {
+            btnPrev.setAlpha(1);
+            btnNext.setAlpha(1);
         }
     }
 
