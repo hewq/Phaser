@@ -1,38 +1,65 @@
-import { levelList } from '@data/gameData';
+import { levelList, levelNotZeroNumList } from '@data/gameData';
 
+// 最外层容器
 let container: Phaser.GameObjects.Container;
+
+// 当前被点击的 tile
 let curTile: Phaser.GameObjects.Container;
+
+// 计时器
 let tmEvt: Phaser.Time.TimerEvent;
+
+// 关卡文案
 let levelTxt: Phaser.GameObjects.Text;
+
+// 关卡锁
 let lock: Phaser.GameObjects.Container;
 
+// 切换关卡按钮
 let btnPrev: Phaser.GameObjects.Sprite;
 let btnNext: Phaser.GameObjects.Sprite;
 
+// localstorage key
 const storageKeyLevel = 'original_level';
 
+// 所有关卡容器列表
 const containerList: Phaser.GameObjects.Container[] = [];
+
+// 被激活的 tile 列表
 let activeTileList: Phaser.GameObjects.Container[] = [];
 
+// 当前是否有动画在进行
 let hasTw = false;
+
+// 是否清除动画
 let clearTw = false;
 
+// 当前关卡
 let curLevel = 1;
+let curLevelIndex = 0;
+
+// 已解锁关卡
 let unlockLevel = 1;
+
+// 关卡总数
 const totalLevel = 10;
 
+// 当前关卡需要移动的 tile 个数
+let curMoveTileNum = 0;
+
+// tile 容器的对应的 index
 const RECT = 0;
 const NUMBER = 1;
 
 const gameOptions = {
-    tileSize: 100,
-    filedSize: {
+    tileSize: 100, // tile 大小
+    filedSize: { // 棋盘大小
         rows: 6,
         cols: 6
     },
-    margin: 10,
-    colors: [0x333333, 0xea225e, 0xef6c00, 0x1674bc, 0x388e3c, 0xffffff],
-    directions: [
+    margin: 10, // tile 间距
+    colors: [0x333333, 0xea225e, 0xef6c00, 0x1674bc, 0x388e3c, 0xffffff], // tile 颜色值
+    directions: [ // 可移动方向
         new Phaser.Math.Vector2(0, -1),
         new Phaser.Math.Vector2(1, -1),
         new Phaser.Math.Vector2(1, 0),
@@ -63,6 +90,7 @@ export default class extends Phaser.Scene {
 
         container = this.add.container(window.game.width + window.game.width / 2, window.game.height / 2);
 
+        // 场景过渡动画
         this.events.on('transitionstart', () => { 
             this.tweens.add({
                 targets: container,
@@ -122,21 +150,29 @@ export default class extends Phaser.Scene {
         container.add(lock);
     }
 
+    // 设置当前关卡 index
+    setCurLevelIndex (): void {
+        curLevelIndex = curLevel - 1;
+    }
+
+    // 初始化已解锁数据
     initUnlockLevel (): void {
         const level = localStorage.getItem(storageKeyLevel);
         if (level) {
             unlockLevel = Number(level);
             curLevel = unlockLevel;
+            this.setCurLevelIndex();
         } else {
             localStorage.setItem(storageKeyLevel, String(unlockLevel));
         }
     }
 
+    // 切换关卡
     switchLevel (direction: number): void {
         const leverSwitchTo = curLevel + direction;
         if (leverSwitchTo > 0 && leverSwitchTo <= totalLevel) {
             this.add.tween({
-                targets: containerList[curLevel - 1],
+                targets: containerList[curLevelIndex],
                 props: {
                     x: window.game.width
                 },
@@ -150,6 +186,7 @@ export default class extends Phaser.Scene {
                 duration: 300
             });
             curLevel = leverSwitchTo;
+            this.setCurLevelIndex();
             levelTxt.setText(`${curLevel}/${totalLevel}`);
         }
 
@@ -157,6 +194,7 @@ export default class extends Phaser.Scene {
         this.setLock();
     }
 
+    // 关卡上锁
     setLock (): void {
         if (curLevel > unlockLevel) {
             lock.setVisible(true);
@@ -165,6 +203,7 @@ export default class extends Phaser.Scene {
         }
     }
 
+    // 设置按钮样式
     setBtnStyle (): void {
         if (curLevel === 1) {
             btnPrev.setAlpha(0.5);
@@ -178,23 +217,30 @@ export default class extends Phaser.Scene {
         }
     }
 
+    // 生成所有关卡棋盘
     createTotalLevel (): void {
         for (let i = 0; i < totalLevel; i++) {
             this.createTileBoard(i);
         }
     }
 
+    // 过渡动画
     transitionOut (progress: number): void {
         container.x = window.game.width / 2 + window.game.width * progress;
     }
 
+    // 获取数字对应的精灵图位置
     getNumberFrameIndex (num: number): number {
         return num - 1 < 0 ? 5 : num - 1;
     }
 
+    // 生成单个关卡棋盘
     createTileBoard (levelIndex: number): void {
+        // 单个小矩形
         let rect: Phaser.GameObjects.Rectangle;
+        // 矩形上的数字
         let number: Phaser.GameObjects.GameObject;
+        // 矩形和数字一起放到这个容器下
         let itemContainer: Phaser.GameObjects.Container;
 
         const tileContainer = this.add.container();
@@ -208,6 +254,7 @@ export default class extends Phaser.Scene {
                 itemContainer.add(rect);
                 itemContainer.add(number);
 
+                // 给每个小矩形打上印记
                 itemContainer.setDataEnabled();
                 itemContainer.setData({
                     value: num,
@@ -229,11 +276,31 @@ export default class extends Phaser.Scene {
         containerList.push(tileContainer);
         container.add(tileContainer);
 
-        if (levelIndex !== 0) {
+        if (levelIndex !== curLevelIndex) {
             tileContainer.setPosition(window.game.width, 0);
         }
     }
 
+    // 是否过关
+    isWin (): boolean {
+        if (curMoveTileNum === levelNotZeroNumList[curLevelIndex]) {
+            return true;
+        }
+
+        return false;
+    }
+
+    // 过关处理事件
+    winHandler (): void {
+        if (curLevel === unlockLevel) {
+            localStorage.setItem(storageKeyLevel, String(++unlockLevel));
+        }
+        if (curLevel !== totalLevel) { // 不是最后一关
+            this.switchLevel(1);
+        }
+    }
+
+    // tile 点击事件
     clickHandler (tile: Phaser.GameObjects.Container): void {
         
         if (hasTw) {
@@ -244,6 +311,12 @@ export default class extends Phaser.Scene {
         if (tile.getData('value') <= 0) {
             if (tile.getData('active')) {
                 this.setTile(tile);
+                curMoveTileNum++;
+                console.log(curMoveTileNum);
+                console.log(levelNotZeroNumList[curLevelIndex]);
+                if (this.isWin()) {
+                    this.winHandler();
+                }
             }
 
             this.resetTile(activeTileList);
@@ -264,6 +337,7 @@ export default class extends Phaser.Scene {
         
     }
 
+    // 重置被激活的 tile
     resetTile (tiles: Phaser.GameObjects.Container[]): void {
         let rect: Phaser.GameObjects.Rectangle;
 
@@ -274,6 +348,7 @@ export default class extends Phaser.Scene {
         });
     }
 
+    // 处理操作成功的 tile
     setTile (tile: Phaser.GameObjects.Container): void {
         const targetNum = tile.getAt(NUMBER) as Phaser.GameObjects.Sprite;
         const curNum = curTile.getAt(NUMBER) as Phaser.GameObjects.Sprite;
@@ -288,6 +363,7 @@ export default class extends Phaser.Scene {
         curRect.setFillStyle(gameOptions.colors[0]);
     }
 
+    // 获取被激活的 tile
     getActiveTileList (): void {
         let activeRow: number;
         let activeCol: number;
@@ -302,17 +378,18 @@ export default class extends Phaser.Scene {
             activeRow = row + value * direction.y;
             activeCol = col + value * direction.x;
             if (activeRow >= 0 && activeRow < gameOptions.filedSize.rows && activeCol >= 0 && activeCol < gameOptions.filedSize.cols) {
-                activeTile = containerList[curLevel - 1].getAt(gameOptions.filedSize.cols * activeRow + activeCol) as Phaser.GameObjects.Container;
+                activeTile = containerList[curLevelIndex].getAt(gameOptions.filedSize.cols * activeRow + activeCol) as Phaser.GameObjects.Container;
                 if (activeTile.getData('value') === 0) {
                     activeTile.setData('active', true);
                     rect = activeTile.getAt(RECT) as Phaser.GameObjects.Rectangle;
                     rect.setFillStyle(gameOptions.colors[gameOptions.colors.length - 1]);
-                    activeTileList.push(containerList[curLevel - 1].getAt(gameOptions.filedSize.cols * activeRow + activeCol) as Phaser.GameObjects.Container);
+                    activeTileList.push(containerList[curLevelIndex].getAt(gameOptions.filedSize.cols * activeRow + activeCol) as Phaser.GameObjects.Container);
                 }
             }
         });
     }
 
+    // 添加动画
     addTween (targets: Phaser.GameObjects.GameObject[]): void {
         tmEvt && tmEvt.destroy();
 

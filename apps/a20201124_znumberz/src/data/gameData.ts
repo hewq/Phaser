@@ -70,3 +70,5 @@ export const levelList = [[
         [3, 2, 1, 1, 2, 2]
     ]
 ];
+
+export const levelNotZeroNumList = [21, 28, 31, 30, 33, 31, 26, 27, 25, 29];
