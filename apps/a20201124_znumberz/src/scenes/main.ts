@@ -134,6 +134,10 @@ export default class extends Phaser.Scene {
             this.switchLevel(1);
         });
 
+        btnRefresh.on('pointerdown', () => {
+            this.refresh();
+        });
+
         levelTxt = this.add.text(320, -270, `${curLevel}/10`, {
             fontSize: 74,
             fontFamily: 'Arail',
@@ -174,6 +178,7 @@ export default class extends Phaser.Scene {
     switchLevel (direction: number): void {
         const leverSwitchTo = curLevel + direction;
         if (leverSwitchTo > 0 && leverSwitchTo <= totalLevel) {
+            this.refresh();
             this.add.tween({
                 targets: containerList[curLevelIndex],
                 props: {
@@ -306,10 +311,7 @@ export default class extends Phaser.Scene {
     // tile 点击事件
     clickHandler (tile: Phaser.GameObjects.Container): void {
         
-        if (hasTw) {
-            clearTw = true;
-            hasTw = false;
-        }
+        this.removeTween();
 
         if (tile.getData('value') <= 0) {
             if (tile.getData('active')) {
@@ -412,6 +414,14 @@ export default class extends Phaser.Scene {
         });
     }
 
+    // 清除动画
+    removeTween (): void {
+        if (hasTw) {
+            clearTw = true;
+            hasTw = false;
+        }
+    }
+
     // 重启游戏
     restart (): void {
         containerList = [];
@@ -422,6 +432,33 @@ export default class extends Phaser.Scene {
         curLevelIndex = 0;
         unlockLevel = 1;
         curMoveTileNum = 0;
+    }
 
+    // 刷新当前关卡
+    refresh (): void {
+        const curContainer = containerList[curLevelIndex].list;
+        let itemContainer: Phaser.GameObjects.Container;
+        let rect: Phaser.GameObjects.Rectangle;
+        let sp: Phaser.GameObjects.Sprite;
+        levelList[curLevelIndex].forEach((row, rowIndex) => {
+            row.forEach((num, colIndex) => {
+                itemContainer = curContainer[rowIndex * gameOptions.filedSize.cols + colIndex] as Phaser.GameObjects.Container;
+
+                rect = itemContainer.getAt(RECT) as Phaser.GameObjects.Rectangle;
+                rect.setFillStyle(gameOptions.colors[num]);
+                sp = itemContainer.getAt(NUMBER) as Phaser.GameObjects.Sprite;
+                sp.setFrame(this.getNumberFrameIndex(num));
+
+                // 给每个小矩形打上印记
+                itemContainer.setData({
+                    value: num
+                });
+            });
+        });
+        
+        activeTileList = [];
+        curMoveTileNum = 0;
+
+        this.removeTween();
     }
 }
