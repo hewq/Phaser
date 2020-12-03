@@ -4,6 +4,7 @@ let container: Phaser.GameObjects.Container;
 let curTile: Phaser.GameObjects.Container;
 let tmEvt: Phaser.Time.TimerEvent;
 let levelTxt: Phaser.GameObjects.Text;
+let lock: Phaser.GameObjects.Container;
 
 const containerList: Phaser.GameObjects.Container[] = [];
 let activeTileList: Phaser.GameObjects.Container[] = [];
@@ -48,6 +49,7 @@ export default class extends Phaser.Scene {
         this.load.spritesheet('title', require('@images/title.png').default, { frameWidth: 750, frameHeight: 100 });
         this.load.spritesheet('numbers', require('@images/numbers.png').default, { frameWidth: 50, frameHeight: 50 });
         this.load.spritesheet('btns', require('@images/btns.png').default, { frameWidth: 100, frameHeight: 100 });
+        this.load.image('lock', require('@images/lock.png').default);
     }
 
     create (): void {
@@ -99,7 +101,15 @@ export default class extends Phaser.Scene {
 
         container.add(levelTxt);
 
-        this.createAntherLevel();
+        this.createTotalLevel();
+
+        lock = this.add.container();
+        const lockRect = this.add.rectangle(4, 76, 750, 650, 0x000000, 0.5);
+        lock.add(lockRect);
+        lock.add(this.add.image(3, 80, 'lock'));
+        lockRect.setInteractive();
+
+        container.add(lock);
     }
 
     switchLevel (direction: number): void {
@@ -124,7 +134,7 @@ export default class extends Phaser.Scene {
         }
     }
 
-    createAntherLevel (): void {
+    createTotalLevel (): void {
         for (let i = 0; i < totalLevel; i++) {
             this.createTileBoard(i);
         }
