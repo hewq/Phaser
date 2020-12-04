@@ -1,4 +1,5 @@
 import 'phaser';
+import dialogPlugin from '@scripts/dialogPlugin';
 import MainScene from '@scenes/main';
 import StartScene from '@scenes/start';
 
@@ -15,6 +16,11 @@ const config: Phaser.Types.Core.GameConfig = {
         parent: 'game',
         width: 750,
         height: 1624
+    },
+    plugins: {
+        scene: [
+            { key: 'dialogPlugin', plugin: dialogPlugin, mapping: 'dialog'}
+        ]
     },
     scene: [StartScene, MainScene]
 };

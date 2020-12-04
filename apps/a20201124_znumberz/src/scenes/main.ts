@@ -72,6 +72,7 @@ const gameOptions = {
 };
 
 export default class extends Phaser.Scene {
+    randomPlugin;
     constructor() {
         super({
             key: 'MainScene'
@@ -88,6 +89,7 @@ export default class extends Phaser.Scene {
     init (): void {
         this.restart();
         this.initUnlockLevel();
+        this.dialog.init();
     }
 
     create (): void {
@@ -305,6 +307,7 @@ export default class extends Phaser.Scene {
         }
         if (curLevel !== totalLevel) { // 不是最后一关
             this.switchLevel(1);
+            this.dialog.show();
         }
     }
 
@@ -342,28 +345,22 @@ export default class extends Phaser.Scene {
 
     // 重置被激活的 tile
     resetTile (tiles: Phaser.GameObjects.Container[]): void {
-        let rect: Phaser.GameObjects.Rectangle;
-
         tiles.forEach((tile) => {
             tile.setData('active', false);
-            rect = tile.getAt(RECT) as Phaser.GameObjects.Rectangle;
-            rect.setFillStyle(gameOptions.colors[0]);
+            (tile.getAt(RECT) as Phaser.GameObjects.Rectangle).setFillStyle(gameOptions.colors[0]);
         });
     }
 
     // 处理操作成功的 tile
     setTile (tile: Phaser.GameObjects.Container): void {
-        const targetNum = tile.getAt(NUMBER) as Phaser.GameObjects.Sprite;
-        const curNum = curTile.getAt(NUMBER) as Phaser.GameObjects.Sprite;
-        const curRect = curTile.getAt(RECT) as Phaser.GameObjects.Rectangle;
         const curValue = curTile.getData('value');
 
         tile.setData('value', -1);
         curTile.setData('value', 0);
 
-        targetNum.setFrame(this.getNumberFrameIndex(curValue));
-        curNum.setFrame(this.getNumberFrameIndex(0));
-        curRect.setFillStyle(gameOptions.colors[0]);
+        (tile.getAt(NUMBER) as Phaser.GameObjects.Sprite).setFrame(this.getNumberFrameIndex(curValue));
+        (curTile.getAt(NUMBER) as Phaser.GameObjects.Sprite).setFrame(this.getNumberFrameIndex(0));
+        (curTile.getAt(RECT) as Phaser.GameObjects.Rectangle).setFillStyle(gameOptions.colors[0]);
     }
 
     // 获取被激活的 tile
@@ -371,7 +368,6 @@ export default class extends Phaser.Scene {
         let activeRow: number;
         let activeCol: number;
         let activeTile: Phaser.GameObjects.Container;
-        let rect: Phaser.GameObjects.Rectangle;
 
         const [value, row, col] = curTile.getData(['value', 'row', 'col']);
 
@@ -384,8 +380,7 @@ export default class extends Phaser.Scene {
                 activeTile = containerList[curLevelIndex].getAt(gameOptions.filedSize.cols * activeRow + activeCol) as Phaser.GameObjects.Container;
                 if (activeTile.getData('value') === 0) {
                     activeTile.setData('active', true);
-                    rect = activeTile.getAt(RECT) as Phaser.GameObjects.Rectangle;
-                    rect.setFillStyle(gameOptions.colors[gameOptions.colors.length - 1]);
+                    (activeTile.getAt(RECT) as Phaser.GameObjects.Rectangle).setFillStyle(gameOptions.colors[gameOptions.colors.length - 1]);
                     activeTileList.push(containerList[curLevelIndex].getAt(gameOptions.filedSize.cols * activeRow + activeCol) as Phaser.GameObjects.Container);
                 }
             }
@@ -438,16 +433,12 @@ export default class extends Phaser.Scene {
     refresh (): void {
         const curContainer = containerList[curLevelIndex].list;
         let itemContainer: Phaser.GameObjects.Container;
-        let rect: Phaser.GameObjects.Rectangle;
-        let sp: Phaser.GameObjects.Sprite;
         levelList[curLevelIndex].forEach((row, rowIndex) => {
             row.forEach((num, colIndex) => {
                 itemContainer = curContainer[rowIndex * gameOptions.filedSize.cols + colIndex] as Phaser.GameObjects.Container;
 
-                rect = itemContainer.getAt(RECT) as Phaser.GameObjects.Rectangle;
-                rect.setFillStyle(gameOptions.colors[num]);
-                sp = itemContainer.getAt(NUMBER) as Phaser.GameObjects.Sprite;
-                sp.setFrame(this.getNumberFrameIndex(num));
+                (itemContainer.getAt(RECT) as Phaser.GameObjects.Rectangle).setFillStyle(gameOptions.colors[num]);
+                (itemContainer.getAt(NUMBER) as Phaser.GameObjects.Sprite).setFrame(this.getNumberFrameIndex(num));
 
                 // 给每个小矩形打上印记
                 itemContainer.setData({
