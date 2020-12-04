@@ -26,6 +26,25 @@
 
 ## 游戏相关信息
 
+### ZNUMBERZ
+
+- source: <https://github.com/hewq/Phaser/tree/master/apps/a20201124_znumberz>
+- reference: <https://triqui.itch.io/znumberz>
+- view: <https://hewq.github.io/apps/a20201124_znumberz/index.html>
+
+### IRRESPONSIBLE NINJA
+
+- tutorial: <https://github.com/hewq/blog/blob/master/Phaser/irresponsible_ninja.md>
+- source: <https://github.com/hewq/Phaser/tree/master/apps/a20201112_irresponsible_ninja>
+- reference: <https://triqui.itch.io/irresponsible-ninja>
+- view: <https://hewq.github.io/apps/a20201112_irresponsible_ninja/index.html>
+
+### RUN AROUND
+
+- source: <https://github.com/hewq/Phaser/tree/master/apps/a20201103runaround>
+- reference: <https://www.emanueleferonato.com/2020/08/13/html5-prototype-of-run-around-game-builth-with-phaser-with-no-physics-engines/>
+- view: <https://hewq.github.io/apps/a20201103runaround/index.html>
+  
 ### MATCH
 
 - tutorial: <https://github.com/hewq/blog/blob/master/Phaser/dragandmatch.md>
@@ -39,17 +58,3 @@
 - source: <https://github.com/hewq/Phaser/tree/master/apps/a20200427growingcircle>
 - reference: <http://phaser.io/news/2020/04/hundreds-flash-game-prototype>
 - view: <https://hewq.github.io/apps/a20200427growingcircle/index.html>
-
-### RUN AROUND
-
-- source: <https://github.com/hewq/Phaser/tree/master/apps/a20201103runaround>
-- reference: <https://www.emanueleferonato.com/2020/08/13/html5-prototype-of-run-around-game-builth-with-phaser-with-no-physics-engines/>
-- view: <https://hewq.github.io/apps/a20201103runaround/index.html>
-
-### IRRESPONSIBLE NINJA
-
-- tutorial: <https://github.com/hewq/blog/blob/master/Phaser/irresponsible_ninja.md>
-- source: <https://github.com/hewq/Phaser/tree/master/apps/a20201112_irresponsible_ninja>
-- reference: <https://triqui.itch.io/irresponsible-ninja>
-- view: <https://hewq.github.io/apps/a20201112_irresponsible_ninja/index.html>
-  
