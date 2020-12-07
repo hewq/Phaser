@@ -166,9 +166,9 @@ export default class extends Phaser.Scene {
 
     // 初始化已解锁数据
     initUnlockLevel (): void {
-        const level = localStorage.getItem(storageKeyLevel);
+        const level = Number(localStorage.getItem(storageKeyLevel));
         if (level) {
-            unlockLevel = Number(level);
+            unlockLevel = level > totalLevel ? totalLevel : level;
             curLevel = unlockLevel;
             this.setCurLevelIndex();
         } else {
@@ -302,10 +302,11 @@ export default class extends Phaser.Scene {
 
     // 过关处理事件
     winHandler (): void {
-        if (curLevel === unlockLevel) {
-            localStorage.setItem(storageKeyLevel, String(++unlockLevel));
-        }
         if (curLevel !== totalLevel) { // 不是最后一关
+            if (curLevel === unlockLevel) {
+                localStorage.setItem(storageKeyLevel, String(++unlockLevel));
+            }
+            
             this.switchLevel(1);
             this.dialog.show();
         }
