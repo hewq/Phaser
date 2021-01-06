@@ -94,6 +94,8 @@ export default class extends Phaser.Scene {
 
     create (): void {
         container = this.add.container(window.game.width + window.game.width / 2, window.game.height / 2);
+        container.setSize(window.game.width, window.game.height);
+        container.setInteractive();
 
         // 场景过渡动画
         this.events.on('transitionstart', () => { 
@@ -116,6 +118,24 @@ export default class extends Phaser.Scene {
         this.setBtnStyle();
 
         container.add([btnMenu, btnPrev, btnNext, btnRefresh]);
+
+        let isPress = false;
+        container.on('pointerdown', () => {
+            isPress = true;
+        });
+        container.on('pointerup', () => {
+            isPress = false;
+        });
+        const pressEvt = this.time.addEvent({
+            callback: () => {
+                if (isPress) {
+                    localStorage.removeItem(storageKeyLevel);
+                    console.log(`localStorage storageKeyLevel already clear`);
+                    pressEvt.destroy();
+                }
+            },
+            delay: 5000
+        });
 
         btnMenu.on('pointerdown', () => {
             this.scene.transition({
