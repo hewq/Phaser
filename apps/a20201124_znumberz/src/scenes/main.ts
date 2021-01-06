@@ -122,19 +122,19 @@ export default class extends Phaser.Scene {
         let isPress = false;
         container.on('pointerdown', () => {
             isPress = true;
+            const pressEvt = this.time.addEvent({
+                callback: () => {
+                    if (isPress) {
+                        localStorage.removeItem(storageKeyLevel);
+                        console.log(`localStorage storageKeyLevel already clear`);
+                        pressEvt.destroy();
+                    }
+                },
+                delay: 5000
+            });
         });
         container.on('pointerup', () => {
             isPress = false;
-        });
-        const pressEvt = this.time.addEvent({
-            callback: () => {
-                if (isPress) {
-                    localStorage.removeItem(storageKeyLevel);
-                    console.log(`localStorage storageKeyLevel already clear`);
-                    pressEvt.destroy();
-                }
-            },
-            delay: 5000
         });
 
         btnMenu.on('pointerdown', () => {
